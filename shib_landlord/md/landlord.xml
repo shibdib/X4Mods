@@ -168,8 +168,14 @@
                             <set_faction_relation faction="$factionOne" otherfaction="$factionTwo" value="$newRelationValue"/>
                         </do_if>
                         <do_else>
-                            <set_value name="$newRelationValue" exact="10^(($uiValue + $uiChangeAmount) / 10) / 1000"/>
-                            <set_faction_relation faction="$factionOne" otherfaction="$factionTwo" value="$relationValue"/>
+                            <set_value name="$newUiValue" exact="$uiValue + ($uiChangeAmount)"/>
+                            <do_if value="$newUiValue lt 0">
+                                <set_value name="$newRelationValue" exact="(10^((($newUiValue * -1)) / 10) / 1000) * -1"/>
+                            </do_if>
+                            <do_else>
+                                <set_value name="$newRelationValue" exact="10^(($newUiValue) / 10) / 1000"/>
+                            </do_else>
+                            <set_faction_relation faction="$factionOne" otherfaction="$factionTwo" value="$newRelationValue"/>
                         </do_else>
                         <set_value name="$text" exact="'Relations with %s have changed from %s to %s.'.[$factionOne.knownname, $uiValue, ($uiValue + ($uiChangeAmount))]"/>
                         <write_to_logbook title="'Relationship Change:'" category="alerts" text="$text"/>
