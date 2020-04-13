@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<content id="ShibAutoMining" name="AutoMining Tweaks" author="Shibdib" version="1.0" date="2020-04-07" save="0" description="Various AutoMining tweaks." enabled="1">
+    <text language="44" name="AutoMining Tweaks" author="Shibdib" description="Various AutoMining tweaks." />
+</content>
