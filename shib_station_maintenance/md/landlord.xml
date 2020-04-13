@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Used GettingPaid as a base -->
+<mdscript name="Landlord" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="E:\x4\md\md.xsd">
+    <cues>
+        <cue name="LL_Base">
+            <conditions>
+                <check_any>
+                    <event_cue_signalled cue="md.Setup.GameStart"/>
+                    <event_player_created/>
+                    <event_cue_signalled/>
+                </check_any>
+            </conditions>
+            <actions>
+                <show_help duration="5s" custom="'Landlord Installed.'"/>
+                <set_value name="global.$lastChecked" exact="player.age - 1h"/>
+                <set_value name="global.$missedPayment" exact="0"/>
+                <set_value name="global.$missedTax" exact="0"/>
+            </actions>
+            <cues>
+                <!-- Every hour determine station costs -->
+                <cue name="LL_Base_Costs" instantiate="true" checkinterval="1h" checktime="player.age + 10s" namespace="this">
+                    <actions>
+                        <set_value name="$taxes" exact="0ct"/>
+                        <set_value name="$maintenanceCosts" exact="0f"/>
+                        <do_if value="global.$lastChecked + 1h le player.age">
+                            <set_value name="global.$lastChecked" exact="player.age"/>
+                            <find_object name="$playerStations" recursive="true" owner="faction.player" class="class.station"
+                                         multiple="true" space="player.galaxy"/>
+                            <!--
+                            If player doesn't own stations continue cancel
+                            -->
+                            <do_if value="not $playerStations.count">
+                                <cancel_cue cue="this"/>
+                            </do_if>
+                            <do_if value="$playerStations.count gt 0">
+                                <create_list name="$stationList"/>
+                                <do_all exact="$playerStations.count" counter="$c">
+                                    <set_value name="$station" exact="$playerStations.{$c}"/>
+                                    <find_object_component name="$stationComponents" object="$station"  recursive="true" multiple="true" class="class.module"/>
+                                    <do_if value="not $stationComponents.count">
+                                        <continue/>
+                                    </do_if>
+                                    <!-- Determine tax amount, player owned space, xenon, and unclaimed is tax free. Tax is based off relationship with faction.-->
+                                    <do_if value="$station.sector.owner == faction.ownerless or $station.sector.owner == faction.player or $station.sector.owner == faction.xenon">
+                                        <set_value name="$tax" exact="0"/>
+                                        <set_value name="$faction" exact="Unclaimed"/>
+                                        <do_if value="$station.sector.owner == faction.player">
+                                            <set_value name="$faction" exact="faction.player.knownname"/>
+                                        </do_if>
+                                    </do_if>
+                                    <!-- Tax if enemy 8% of build plot cost, neutral 4%, friendly 2%, member 1.25%.-->
+                                    <do_else>
+                                        <set_value name="$taxMulti" exact="0.04f"/>
+                                        <do_if value="$station.sector.owner.relationto.{faction.player} lt 0f">
+                                            <set_value name="$taxMulti" exact="0.08f"/>
+                                        </do_if>
+                                        <do_elseif value="$station.sector.owner.relationto.{faction.player} ge 0f and $station.sector.owner.relationto.{faction.player} lt 0.01f">
+                                            <set_value name="$taxMulti" exact="0.04f"/>
+                                        </do_elseif>
+                                        <do_elseif value="$station.sector.owner.relationto.{faction.player} ge 0.01f and $station.sector.owner.relationto.{faction.player} lt 0.1f">
+                                            <set_value name="$taxMulti" exact="0.02f"/>
+                                        </do_elseif>
+                                        <do_elseif value="$station.sector.owner.relationto.{faction.player} ge 0.1f">
+                                            <set_value name="$taxMulti" exact="0.0125f"/>
+                                        </do_elseif>
+                                        <set_value name="$plotCost" exact="($station.paidbuildplot.payment / 100)f"/>
+                                        <set_value name="$tax" exact="($plotCost * $taxMulti)ct"/>
+                                        <set_value name="$taxes" operation="add" exact="$tax"/>
+                                        <set_value name="$faction" exact="$station.sector.owner.knownname"/>
+                                    </do_else>
+                                    <!-- TODO: Station maintenance is currently a flat rate 500cr per part, make certain parts count for more -->
+                                    <!-- Add station info to list for detailed log entry-->
+                                    <append_to_list name="$stationList" exact="[$station.knownname, $station.sector.knownname, $tax, $faction, ($stationComponents.count * 500)f]"/>
+                                    <set_value name="$maintenanceCosts" operation="add" exact="($stationComponents.count * 500)ct"/>
+                                    <!-- TODO: Account for events -->
+                                </do_all>
+                                <set_value name="$totalCost" exact="($maintenanceCosts + $taxes)"/>
+                            </do_if>
+                        </do_if>
+                        <set_value name="$textHeader" exact="'Station Maintenance: \n'"/>
+                        <set_value name="$moneyChange" exact="-$totalCost"/>
+
+                        <!--
+                        If player can't afford the bill
+                        -->
+                        <do_if value="player.money ge $totalCost">
+                            <set_value name="global.$missedPayment" operation="add" exact="1"/>
+                            <!-- If player cant even afford taxes, relationship will go down -->
+                            <do_if value="player.money ge $taxes">
+                                <do_all exact="$playerStations.count" counter="$c">
+                                    <set_value name="$station" exact="$playerStations.{$c}"/>
+                                    <set_value name="$factionOne" exact="$station.sector.owner"/>
+                                    <set_value name="$factionTwo" exact="faction.player"/>
+                                    <set_value name="$uiChangeAmount" exact="-1"/>
+                                    <include_actions ref="ChangeRelations" comment="input: $factionOne, $factionTwo, $uiChangeAmount" chance="(10 * global.$missedPayment)"/>
+                                </do_all>
+                            </do_if>
+                            <!-- If player cant afford maintenance, stations will potentially have issues-->
+                            <do_if value="player.money le $maintenanceCosts">
+                                <do_all exact="$playerStations.count" counter="$c">
+                                    <set_value name="$station" exact="$playerStations.{$c}"/>
+                                    <find_object_component name="$productionComponents" object="$station"  recursive="true" multiple="true" module="true" canbuildclass="null"/>
+                                    <do_if value="$productionComponents.count">
+                                        <do_all exact="$productionComponents.count" counter="$c">
+                                            <set_object_hacked object="$productionComponents.{$c}" duration="900s" chance="(10 * global.$missedPayment)"/>
+                                        </do_all>
+                                    </do_if>
+                                </do_all>
+                            </do_if>
+                            <set_value name="$textBasic" exact="'Unable to afford station costs.\nTotal cost for %s Stations, %s Credits.'.[$playerStations.count, ($moneyChange)ct]"/>
+                        </do_if>
+
+                        <!--
+                        Bill paid in full
+                        -->
+                        <do_else>
+                            <do_if value="global.$missedPayment gt 0">
+                                <set_value name="global.$missedPayment" operation="subtract" exact="1"/>
+                            </do_if>
+                            <set_value name="$textBasic" exact="'Total cost for %s Stations, %s Credits.'.[$playerStations.count, ($moneyChange)ct]"/>
+                        </do_else>
+                        <!-- Notification and log outputs -->
+                        <set_value name="$textDetailed" exact="'Detailed Overview:\nTaxes Paid: %s Credits\nMaintenance Costs: %s Credits\nTotal: %s Credits\n\nStation Details:'.[$taxes, $maintenanceCosts, ($moneyChange)ct]"/>
+                        <do_all exact="$stationList.count" counter="$c">
+                            <set_value name="$textDetailed" operation="add" exact="'\n%s (%s) - Tax: %s - Maintenance: %s Credits'.[$stationList.{$c}.{1}, $stationList.{$c}.{2}, $stationList.{$c}.{3}, $stationList.{$c}.{5}]"/>
+                        </do_all>
+                        <show_notification text="$textHeader + $textBasic" timeout="10s"/>
+                        <write_to_logbook title="$textHeader" category="upkeep" text="$textDetailed"
+                                          money="($moneyChange)Cr"/>
+                        <reward_player money="($moneyChange)Cr"/>
+                    </actions>
+                </cue>
+                <!-- input: $factionOne, $factionTwo, $uiChangeAmount -->
+                <library name="ChangeRelations">
+                    <actions>
+                        <set_value name="$uiValue" exact="$factionOne.relation.{$factionOne.relationto.{$factionTwo}}.uivalue"/>
+                        <do_if value="$uiValue le 5 and $uiValue ge -5">
+                            <set_value name="$relationValue" exact="$factionOne.relationto.{$factionTwo}"/>
+                            <set_value name="$newRelationValue" exact="($relationValue + (0.00064 * $uiChangeAmount))"/>
+                            <set_faction_relation faction="$factionOne" otherfaction="$factionTwo" value="$newRelationValue" />
+                        </do_if>
+                        <do_else>
+                            <set_value name="$newRelationValue" exact="10^(($uiValue + $uiChangeAmount) / 10) / 1000"/>
+                            <set_faction_relation faction="$factionOne" otherfaction="$factionTwo" value="$relationValue" />
+                        </do_else>
+                        <set_value name="$text" exact="'Relations with %s have changed from %s to %s.'.[$factionOne.knownname, $uiValue, ($uiValue + ($uiChangeAmount))]"/>
+                        <write_to_logbook title="'Relationship Change:'" category="alerts" text="$text"/>
+                    </actions>
+                </library>
+            </cues>
+        </cue>
+
+        <cue name="LL_KeepAlive" instantiate="false">
+            <conditions>
+                <check_any>
+                    <event_cue_signalled/>
+                </check_any>
+            </conditions>
+            <delay exact="2s"/>
+            <actions>
+                <do_if value="event.param">
+                    <signal_cue_instantly cue="LL_Base" param="event.param"/>
+                </do_if>
+                <do_else>
+                    <signal_cue cue="LL_Base"/>
+                </do_else>
+                <reset_cue cue="this"/>
+            </actions>
+        </cue>
+    </cues>
+</mdscript>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mdscript name="LIB_Landlord" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="E:\x4\md\md.xsd">
+    <cues>
+        <!-- input: $factionOne, $factionTwo, $uiChangeAmount -->
+        <library name="ChangeRelations">
+            <actions>
+                <set_value name="$uiValue" exact="(10 * log10(($factionOne.relationto.{$factionTwo}) * 1000))"/>
+                <do_if value="$uiValue le 5 and $uiValue ge -5">
+                    <set_value name="$relationValue" exact="$station.sector.owner.relationto.{$factionTwo}"/>
+                    <set_value name="$newRelationValue" exact="($relationValue + (0.00064 * $uiChangeAmount))"/>
+                    <set_faction_relation faction="$factionOne" otherfaction="$factionTwo" value="$newRelationValue" />
+                </do_if>
+                <do_else>
+                    <set_value name="$newRelationValue" exact="10^(($uiValue + $uiChangeAmount) / 10) / 1000"/>
+                    <set_faction_relation faction="$factionOne" otherfaction="$factionTwo" value="$relationValue" />
+                </do_else>
+                <set_value name="$text" exact="'Relations with %s have changed from %s to %s.'.[$factionOne.knownname, $uiValue, ($uiValue + ($uiChangeAmount))]"/>
+                <write_to_logbook title="'Relationship Change:'" category="alerts" text="$textDetailed"/>
+            </actions>
+        </library>
+    </cues>
+</mdscript>

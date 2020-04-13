@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+CHANGES
+- Will jettison between 20% and 50% of a resource if it cannot find somewhere to sell it after idling and will return to mining.
+-->
+<diff>
+    <replace sel="//cue[@name='TempRelationDropped']">
+        <cue name="TempRelationDropped" instantiate="true" namespace="this">
+            <conditions>
+                <event_player_relation_changed />
+                <check_value value="event.object != null and event.param != null and event.param2.{1} lt event.param2.{2}" />
+                <check_value value="not IllegalActivity.$updatingrelation" comment="Do not react if updating the relation via attack handler" />
+                <check_value value="notification.reputation_lost_temp.active" />
+                <check_age min="@$lasttime + 30s"/>
+            </conditions>
+            <actions>
+                <!-- Player lost reputation temporarily for a specific object -->
+                <debug_text text="'Player lost reputation for entity %4 (%5, %1): %3 --&gt; %2 (entity=%4)'.[event.param, event.param2.{1}, event.param2.{2}, event.object.knownname, event.object.controlled.knownname]" />
+                <set_value name="$newnum" exact="faction.player.relation.{event.param2.{1}}.uivalue" />
+                <set_value name="$oldnum" exact="faction.player.relation.{event.param2.{2}}.uivalue" />
+                <do_if value="$newnum lt $oldnum">
+                    <set_value name="$tickertext" exact="[{1015,16}, '', event.object.controlled.name, '', {1015,250} + {1001,120}, $newnum]" comment="Lost reputation temporarily / [objectname] / Current reputation:" />
+                    <set_value name="$tickertext.{1}" operation="add" exact="{1001,120}" />
+                    <set_value name="$tickertext.{2}" exact="$newnum - $oldnum" />
+                    <do_if value="event.param3" comment="relationchangereason">
+                        <set_value name="$tickertext.{5}" operation="insert" exact="{1015,251} + {1001,120}" comment="Reason:" />
+                        <set_value name="$tickertext.{6}" operation="insert" exact="event.param3.name" />
+                    </do_if>
+                    <show_notification text="$tickertext" sound="ui_mon_eve_notoriety_down" />
+                    <set_value name="static.$lasttime" exact="player.age"/>
+                </do_if>
+            </actions>
+        </cue>
+    </replace>
+    <replace sel="//cue[@name='BaseRelationChanged']">
+        <cue name="BaseRelationChanged" instantiate="true" namespace="this">
+            <conditions>
+                <event_player_relation_changed />
+                <check_value value="event.object == null and event.param != null" />
+                <check_value value="not IllegalActivity.$updatingrelation" comment="Do not react if updating the relation via attack handler" />
+            </conditions>
+            <actions>
+                <!-- Player reputation changed permanently (faction base relation changed) -->
+                <!--<debug_text text="'Player reputation changed permanently for %1: %3 &gt; %2'.[event.param, event.param2.{1}, event.param2.{2}]" />-->
+                <set_value name="$oldnum" exact="faction.player.relation.{event.param2.{2}}.uivalue" />
+                <set_value name="$newnum" exact="faction.player.relation.{event.param2.{1}}.uivalue" />
+                <set_value name="$tickertext" exact="['', '', {1001,43} + {1001,120}, event.param.name, {1015,250} + {1001,120}, $newnum]" comment="Faction: / Current reputation:"/>
+                <do_if value="$newnum != $oldnum">
+                    <set_value name="$tickertext.{1}" exact="{1001,120}" comment="Preceding text will be inserted later" />
+                    <set_value name="$tickertext.{2}" exact="(if $newnum gt $oldnum then '+' else '') + ($newnum - $oldnum)" />
+                </do_if>
+                <do_if value="event.param3" comment="relationchangereason">
+                    <set_value name="$tickertext.{5}" operation="insert" exact="{1015,251} + {1001,120}" comment="Reason:" />
+                    <set_value name="$tickertext.{6}" operation="insert" exact="event.param3.name" />
+                </do_if>
+                <do_if value="event.param2.{1} gt event.param2.{2}">
+                    <set_value name="$tickertext.{1}" exact="{1015,14} + $tickertext.{1}" comment="Reputation gained" />
+                    <do_if value="notification.reputation_gained.active">
+                        <show_notification text="$tickertext" sound="ui_mon_eve_notoriety_up" />
+                    </do_if>
+                    <set_value name="stat.max_faction_relation" exact="$newnum" />
+                </do_if>
+                <do_else>
+                    <set_value name="$tickertext.{1}" exact="{1015,15} + $tickertext.{1}" comment="Reputation lost" />
+                    <do_if value="$newnum != $oldnum">
+                        <do_if value="notification.reputation_lost.active">
+                            <show_notification text="$tickertext" sound="ui_mon_eve_notoriety_down" />
+                        </do_if>
+                    </do_if>
+                </do_else>
+                <!-- Build the logbook text entirely from scratch -->
+                <do_if value="$tickertext.{2} == ''">
+                    <set_value name="$title" exact="$tickertext.{1}" />
+                </do_if>
+                <do_else>
+                    <set_value name="$title" exact="$tickertext.{1} + ' ' + $tickertext.{2}" />
+                </do_else>
+                <set_value name="$logtext" exact="[{1015,250} + {1001,120}, $newnum]" />
+                <do_if value="event.param3" comment="relationchangereason">
+                    <set_value name="$logtext.{1}" operation="insert" exact="$tickertext.{5}" />
+                    <set_value name="$logtext.{2}" operation="insert" exact="$tickertext.{6}" />
+                </do_if>
+                <write_to_logbook category="general" title="$title" faction="event.param" text="$logtext" />
+            </actions>
+        </cue>
+    </replace>
+</diff>

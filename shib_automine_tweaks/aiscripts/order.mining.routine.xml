@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+CHANGES
+- Will jettison between 20% and 50% of a resource if it cannot find somewhere to sell it after idling and will return to mining.
+-->
+<diff>
+    <replace sel="//do_if[@value='$amount']">
+        <do_if value="$amount">
+            <set_value name="$resource_buyer" exact="$buyoffer.buyer"/>
+            <set_value name="$resource_ware" exact="$buyoffer.ware"/>
+            <debug_text text="'creating trade order to sell %1 %2 to %3 (%4, %5) for %6Cr'.[$amount, $resource_ware, $resource_buyer.knownname, $resource_buyer, $resource_buyer.idcode, ($amount * $buyoffer.unitprice).formatted.default]" chance="$debugchance" />
+            <create_trade_order name="$tradeorder" object="this.object" tradeoffer="$buyoffer" amount="$amount" internal="not $blacklist_overridesell?" immediate="true"/>
+            <remove_ware_reservation object="$resource_buyer" reserver="this.assignedcontrolled" type="sell" virtual="true" ware="$resource_ware"/>
+            <remove_value name="$resource_buyer" />
+            <remove_value name="$resource_ware" />
+            <remove_value name="$idleCount" />
+        </do_if>
+    </replace>
+    <replace sel="//do_elseif[@value='this.assignedcontrolled.cargo.count']">
+        <do_elseif value="this.assignedcontrolled.cargo.count">
+            <set_value name="$idle"/>
+            <do_if value="(not this.isplayerowned) or ($idleCount?)">
+                <do_all exact="$warebasket.count" counter="$i">
+                    <set_value name="$possibleware" exact="$warebasket.{$i}"/>
+                    <set_value name="$maxamount" exact="this.assignedcontrolled.cargo.{$possibleware}.max"/>
+                    <do_if value="$maxamount">
+                        <drop_cargo object="this.assignedcontrolled" ware="$possibleware" min="($maxamount * 0.2f)i" max="($maxamount * 0.5f)i" amounts="$droppedamounts" wares="$droppedwares"/>
+                        <do_all exact="$droppedwares.count" counter="$d" chance="$debugchance">
+                            <debug_text text="'%1 (%2) dropped %3 %4 because that ware is unsellable in %5'.[this.assignedcontrolled.knownname, this.assignedcontrolled, $droppedamounts.{$d}, $droppedwares.{$d}, this.cluster.knownname]"/>
+                        </do_all>
+                    </do_if>
+                </do_all>
+                <remove_value name="$possibleware" />
+                <remove_value name="$maxamount" />
+                <remove_value name="$droppedwares" />
+                <remove_value name="$idleCount" />
+                <remove_value name="$idle"/>
+            </do_if>
+        </do_elseif>
+    </replace>
+    <replace sel="//do_if[@value='$idle?']">
+        <do_if value="$idle?">
+            <set_value name="$idleCount"/>
+            <remove_value name="$idle"/>
+            <set_command_action commandaction="commandaction.calculating" />
+            <run_script name="'move.idle'" >
+                <param name="Min" value="30s" />
+                <param name="Max" value="60s" />
+            </run_script>
+        </do_if>
+    </replace>
+</diff>

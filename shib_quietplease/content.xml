@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<content id="ShibQuiet" name="Quiet Please" author="Shibdib" version="1.0" date="2020-04-07" save="0" description="Testerino." enabled="1">
+ <text language="44" name="Quiet Please" author="Shibdib" description="Test Test." />
+</content>

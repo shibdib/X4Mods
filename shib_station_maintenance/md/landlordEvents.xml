@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Used GettingPaid as a base -->
+<mdscript name="Landlord" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="E:\x4\md\md.xsd">
+    <cues>
+        <cue name="LL_Base">
+            <conditions>
+                <check_any>
+                    <event_cue_signalled cue="md.Setup.GameStart"/>
+                    <event_player_created/>
+                    <event_cue_signalled/>
+                </check_any>
+            </conditions>
+            <actions>
+                <show_help duration="15s" custom="'Station Maintenance installed.'"/>
+                <set_value name="global.$lastChecked" exact="player.age - 1h"/>
+                <set_value name="global.$missedPayment" exact="0"/>
+                <create_list name="$activeEvents"/>
+            </actions>
+            <cues>
+                <!-- Every 15 minutes check for new events and manage old ones -->
+                <cue name="LL_Event_Coordinator" instantiate="true" checkinterval="15m" namespace="this">
+                    <actions>
+                        <find_object name="$playerStations" recursive="true" owner="faction.player" class="class.station"
+                                     multiple="true" space="player.galaxy"/>
+                        <do_if value="$playerStations.count gt 0">
+                            <!-- 30% chance an event change occurs -->
+                            <set_value name="$randomInt" min="1" max ="100"/>
+                            <do_if value="$randomInt le 1">
+                                <remove_value name="$randomInt"/>
+                                <cancel_cue cue="this"/>
+                            </do_if>
+                            <!-- Handle active events -->
+                            <do_if value="$activeEvents.count gt 0">
+                                <do_all exact="$activeEvents.count" counter="$c">
+
+                                </do_all>
+                            </do_if>
+                            <!-- Only allow # of events equal to number of stations * 2 -->
+                            <do_if value="$activeEvents.count lt ($playerStations.count * 2)">
+                                <set_value name="$randomInt" min="1" max ="100"/>
+                                <!-- Boons if no missed payments -->
+                                <do_if value="global.$missedPayment == 0">
+                                    <!-- Minor Tax Break (Global) -->
+                                    <do_if value="$randomInt le 30">
+                                        <append_to_list name="$activeEvents" exact="[1, null, '\nThe tax break has ended, your taxes return to normal.']"/>
+                                        <set_value name="$textBasic" exact="'\nYour organization has been granted a 10 percent station tax break.'"/>
+                                    </do_if>
+                                    <!-- Placeholder boon 1 -->
+                                    <do_elseif value="$randomInt gt 30 and $randomInt le 40">
+                                        <append_to_list name="$activeEvents" exact="[2, null, '\nPlaceholder boon 1 ends.']"/>
+                                        <set_value name="$textBasic" exact="'\nPlaceholder boon 1 starts.'"/>
+                                    </do_elseif>
+                                    <!-- Spare parts found (Global reduced maintenance) -->
+                                    <do_elseif value="$randomInt gt 40 and $randomInt le 60">
+                                        <append_to_list name="$activeEvents" exact="[3, null, '\nThe maintenance depot is empty, your maintenance fees return to normal.']"/>
+                                        <set_value name="$textBasic" exact="'\nYou found a maintenance depot with spare parts, your stations will enjoy decreased maintenance fees while these last.'"/>
+                                    </do_elseif>
+                                    <!-- Placeholder boon 2 -->
+                                    <do_elseif value="$randomInt gt 60 and $randomInt le 95">
+                                        <append_to_list name="$activeEvents" exact="[4, null, '\nPlaceholder boon 2 ends.']"/>
+                                        <set_value name="$textBasic" exact="'\nPlaceholder boon 2 starts.'"/>
+                                    </do_elseif>
+                                    <!-- Tax Return (reduced maintenance) -->
+                                    <do_elseif value="$randomInt gt 95 and $randomInt le 100">
+                                        <append_to_list name="$activeEvents" exact="[5, null, null]"/>
+                                        <set_value name="$textBasic" exact="'\nYou overpaid on your taxes, you will receive a tax return soon.'"/>
+                                    </do_elseif>
+                                </do_if>
+                                <!-- Debuffs if missed payments -->
+                                <do_else>
+                                    <!-- Lost Cargo -->
+                                    <do_if value="$randomInt le 30">
+                                        <append_to_list name="$activeEvents" exact="[6, null, '\nPlaceholder debuff 1 ends.']"/>
+                                        <set_value name="$textBasic" exact="'\nPlaceholder debuff 1 starts.'"/>
+                                    </do_if>
+                                    <!-- Station Damage -->
+                                    <do_elseif value="$randomInt gt 30 and $randomInt le 40">
+                                        <append_to_list name="$activeEvents" exact="[7, null, '\nPlaceholder debuff 2 ends.']"/>
+                                        <set_value name="$textBasic" exact="'\nPlaceholder debuff 2 starts.'"/>
+                                    </do_elseif>
+                                    <!-- Theft -->
+                                    <do_elseif value="$randomInt gt 40 and $randomInt le 60">
+                                        <append_to_list name="$activeEvents" exact="[8, null, '\nPlaceholder debuff 3 ends.']"/>
+                                        <set_value name="$textBasic" exact="'\nPlaceholder debuff 3 starts.'"/>
+                                    </do_elseif>
+                                    <!-- Production Failure -->
+                                    <do_elseif value="$randomInt gt 60 and $randomInt le 98">
+                                        <append_to_list name="$activeEvents" exact="[9, null, '\nPlaceholder debuff 4 ends.']"/>
+                                        <set_value name="$textBasic" exact="'\nPlaceholder debuff 4 starts.'"/>
+                                    </do_elseif>
+                                    <!-- Explosion -->
+                                    <do_elseif value="$randomInt gt 98 and $randomInt le 100">
+                                        <append_to_list name="$activeEvents" exact="[10, null, '\nPlaceholder debuff 5 ends.']"/>
+                                        <set_value name="$textBasic" exact="'\nPlaceholder debuff 5 starts.'"/>
+                                    </do_elseif>
+                                </do_else>
+                                <set_value name="$textHeader" exact="'Random Event: \n'"/>
+                                <show_notification text="$textHeader + $textBasic" sound="notification_generic" timeout="10s"/>
+                                <write_to_logbook title="$textHeader" category="upkeep" text="$textBasic"/>
+                            </do_if>
+                        </do_if>
+                    </actions>
+                </cue>
+                <!-- Every hour determine station costs -->
+                <cue name="LL_Base_Costs" instantiate="true" checkinterval="1h" checktime="player.age + 20s" namespace="this">
+                    <actions>
+                        <set_value name="$taxes" exact="0"/>
+                        <set_value name="$maintenanceCosts" exact="0"/>
+                        <set_value name="$continue" exact="false"/>
+                        <do_if value="global.$lastChecked + 1h le player.age">
+                            <set_value name="global.$lastChecked" exact="player.age"/>
+                            <set_value name="$continue" exact="true"/>
+                            <find_object name="$playerStations" recursive="true" owner="faction.player" class="class.station"
+                                         multiple="true" space="player.galaxy"/>
+                            <do_if value="$playerStations.count gt 0">
+                                <create_list name="$stationList"/>
+                                <do_all exact="$playerStations.count" counter="$c">
+                                    <set_value name="$station" exact="$playerStations.{$c}"/>
+                                    <find_object_component name="$stationComponents" object="$station"  recursive="true" multiple="true" class="class.module"/>
+                                    <do_if value="not $stationComponents.count">
+                                        <continue/>
+                                    </do_if>
+                                    <!-- Determine tax amount, player owned space and unclaimed is tax free. Tax is based off relationship with faction.
+                                    TODO: Change how tax is determined?
+                                    -->
+                                    <do_if value="$station.sector.owner == faction.ownerless or $station.sector.owner == faction.player">
+                                        <set_value name="$tax" exact="0"/>
+                                        <set_value name="$faction" exact="Unclaimed"/>
+                                        <do_if value="$station.sector.owner == faction.player">
+                                            <set_value name="$faction" exact="faction.player.knownname"/>
+                                        </do_if>
+                                    </do_if>
+
+                                    <do_else>
+                                        <set_value name="$taxMulti" min="100" max="1000"/>
+                                        <do_if value="faction.player.hasrelation.enemy.{station.sector.owner}">
+                                            <set_value name="$taxMulti" exact="6550"/>
+                                        </do_if>
+                                        <do_elseif value="faction.player.hasrelation.neutral.{station.sector.owner}">
+                                            <set_value name="$taxMulti" exact="2750"/>
+                                        </do_elseif>
+                                        <do_elseif value="faction.player.hasrelation.friend.{station.sector.owner}">
+                                            <set_value name="$taxMulti" exact="700"/>
+                                        </do_elseif>
+                                        <set_value name="$tax" exact="($stationComponents.count * $taxMulti)"/>
+                                        <set_value name="$taxes" operation="add" exact="$tax"/>
+                                        <set_value name="$faction" exact="$station.sector.owner.knownname"/>
+                                    </do_else>
+                                    <!-- TODO: Station maintenance is currently a flat rate 500cr per part, make certain parts count for more -->
+                                    <!-- Add station info to list for detailed log entry-->
+                                    <append_to_list name="$stationList" exact="[$station.knownname, $station.sector.knownname, $tax, $faction, ($stationComponents.count * 500)]"/>
+                                    <set_value name="$maintenanceCosts" operation="add" exact="($stationComponents.count * 500)"/>
+                                    <!-- TODO: Account for events -->
+                                </do_all>
+                                <set_value name="$totalCost" exact="($maintenanceCosts + $taxes)"/>
+                                <set_value name="$continue" exact="true"/>
+                            </do_if>
+                        </do_if>
+                        <!-- If player doesn't own stations continue without any notifications -->
+                        <do_if value="not $continue">
+                            <remove_value name="$station"/>
+                            <remove_value name="$playerStations"/>
+                            <remove_value name="$taxes"/>
+                            <remove_value name="$maintenanceCosts"/>
+                            <remove_value name="$totalCost"/>
+                            <remove_value name="$continue"/>
+                            <cancel_cue cue="this"/>
+                        </do_if>
+                        <!-- Determine costs, if costs is more than the players account charge the whole account
+                         TODO: Penalties for underpayment? (Station sale to faction, decreased productivity, damage)
+                         -->
+                        <set_value name="$moneyChange" exact="0Cr"/>
+                        <set_value name="$moneyChange" exact="-$totalCost"/>
+                        <!-- Track number of missed payments -->
+                        <do_if value="player.money le $totalCost">
+                            <set_value name="$moneyChange" exact="-player.money"/>
+                            <set_value name="global.$missedPayment" operation="add" exact="1"/>
+                        </do_if>
+                        <do_elseif value="global.$missedPayment gt 0">
+                            <set_value name="global.$missedPayment" operation="subtract" exact="1"/>
+                        </do_elseif>
+                        <!-- Notification and log outputs -->
+                        <set_value name="$textHeader" exact="'Station Maintenance: \n'"/>
+                        <set_value name="$textBasic"
+                                   exact="'Total cost for %s Stations, %s Credits.'.[$playerStations.count, $totalCost]"/>
+                        <set_value name="$textDetailed" exact="'Detailed Overview:\nTaxes Paid: %s Credits\nMaintenance Costs: %s Credits\nMisc. Costs: %s Credits\nTotal: %s Credits\n\nStation Details:'.[$taxes, $maintenanceCosts, 'Placeholder', $totalCost]"/>
+                        <do_all exact="$stationList.count" counter="$c">
+                            <set_value name="$textDetailed" operation="add" exact="'\n%s (%s) - Tax: %s - Maintenance: %s Credits'.[$stationList.{$c}.{1}, $stationList.{$c}.{2}, $stationList.{$c}.{3}, $stationList.{$c}.{5}]"/>
+                        </do_all>
+                        <show_notification text="$textHeader + $textBasic" sound="notification_generic" timeout="10s"/>
+                        <write_to_logbook title="$textHeader" category="upkeep" text="$textDetailed"
+                                          money="($moneyChange)Cr"/>
+                        <reward_player money="($moneyChange)Cr"/>
+                    </actions>
+                </cue>
+            </cues>
+        </cue>
+        <cue name="LL_KeepAlive" instantiate="false">
+            <conditions>
+                <check_any>
+                    <event_cue_signalled/>
+                </check_any>
+            </conditions>
+            <delay exact="2s"/>
+            <actions>
+                <do_if value="event.param">
+                    <signal_cue_instantly cue="LL_Base" param="event.param"/>
+                </do_if>
+                <do_else>
+                    <signal_cue cue="LL_Base"/>
+                </do_else>
+                <reset_cue cue="this"/>
+            </actions>
+        </cue>
+    </cues>
+</mdscript>

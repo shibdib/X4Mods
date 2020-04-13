@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Used GettingPaid as a base -->
+<mdscript name="ResearchModule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="E:\x4\md\md.xsd">
+    <cues>
+        <cue name="RM_Base">
+            <conditions>
+                <check_any>
+                    <event_cue_signalled cue="md.Setup.GameStart"/>
+                    <event_player_created/>
+                    <event_cue_signalled/>
+                </check_any>
+            </conditions>
+            <actions>
+                <set_value name="global.$initialActivation" exact="null"/>
+                <show_help duration="15s" custom="'Research Module installed.'"/>
+            </actions>
+            <cues>
+                <!-- Check if the research tab is active or not -->
+                <cue name="RM_Check_For_Module" instantiate="false">
+                    <conditions>
+                        <check_any>
+                            <event_player_build_finished/>
+                            <event_player_owned_destroyed/>
+                            <event_cue_signalled/>
+                        </check_any>
+                    </conditions>
+                    <actions>
+                        <find_object name="$playerStations" recursive="true" owner="faction.player" class="class.station"
+                                     multiple="true" space="player.galaxy"/>
+                        <do_if value="$playerStations.count gt 0">
+                            <set_value name="$moduleFound" exact="null"/>
+                            <do_all exact="$playerStations.count" counter="$c">
+                                <set_value name="$station" exact="$playerStations.{$c}"/>
+                                <find_object_component name="$stationComponents" object="$station"  recursive="true" multiple="true" class="class.module"/>
+                                <do_if value="$stationComponents.count">
+                                    <do_all exact="$stationComponents.count" counter="$c">
+                                        <set_value name="$stationModule" exact="$stationComponents.{$c}"/>
+                                    </do_all>
+                                </do_if>
+                            </do_all>
+                        </do_if>
+                    </actions>
+                </cue>
+            </cues>
+        </cue>
+    </cues>
+</mdscript>
