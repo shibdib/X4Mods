@@ -14,20 +14,75 @@
             </conditions>
             <actions>
                 <show_help duration="5s" custom="'Landlord Installed.'"/>
-                <set_value name="global.$lastChecked" exact="player.age - 1h"/>
+                <set_value name="global.$lastCheckedPayments" exact="player.age - 1h"/>
+                <set_value name="global.$lastCheckedCollector" exact="player.age - 1h"/>
                 <set_value name="global.$missedPayment" exact="0"/>
                 <set_value name="global.$missedTax" exact="0"/>
             </actions>
             <cues>
+                <!-- Every hour collect taxes -->
+                <cue name="LL_Tax_Collector" instantiate="true" checkinterval="1h" checktime="player.age + 10s" namespace="this">
+                    <actions>
+                        <do_if value="global.$lastCheckedCollector + 1h le player.age">
+                            <set_value name="global.$lastCheckedCollector" exact="player.age"/>
+                            <find_sector name="$playerSectors" owner="faction.player"/>
+                            <!--If player doesn't own sectors cancel-->
+                            <do_if value="not $playerSectors.count">
+                                <cancel_cue cue="this"/>
+                            </do_if>
+                            <!--Iterate thru owned sectors-->
+                            <set_value name="$totalStations" exact="0"/>
+                            <set_value name="$taxes" exact="0ct"/>
+                            <do_all exact="$playerSectors.count" counter="$c">
+                                <set_value name="$sector" exact="$playerSectors.{$c}"/>
+                                <find_object name="$stations" recursive="true" class="class.station" multiple="true" space="$sector" known="true">
+                                    <!--No taxes from your own stations, xenon, or criminal-->
+                                    <match owner="[faction.player, faction.xenon, faction.criminal]" negate="true"/>
+                                </find_object>
+                                <do_if value="$stations.count">
+                                    <set_value name="$totalStations" operation="add" exact="$stations.count"/>
+                                    <do_all exact="$stations.count" counter="$c">
+                                        <set_value name="$station" exact="$stations.{$c}"/>
+                                        <set_value name="$taxMulti" exact="0.04f"/>
+                                        <set_value name="$relations" exact="faction.player.relationto.{$station.owner}"/>
+                                        <do_if value="$station.sector.owner.relationto.{faction.player} lt 0f">
+                                            <set_value name="$taxMulti" exact="0.08f"/>
+                                        </do_if>
+                                        <do_elseif value="$relations ge 0f and $relations lt 0.01f">
+                                            <set_value name="$taxMulti" exact="0.04f"/>
+                                        </do_elseif>
+                                        <do_elseif value="$relations ge 0.01f and $relations lt 0.1f">
+                                            <set_value name="$taxMulti" exact="0.02f"/>
+                                        </do_elseif>
+                                        <do_elseif value="$relations ge 0.1f">
+                                            <set_value name="$taxMulti" exact="0.0125f"/>
+                                        </do_elseif>
+                                        <set_value name="$plotCost" exact="($station.paidbuildplot.payment / 100)f"/>
+                                        <set_value name="$tax" exact="($plotCost * $taxMulti)ct"/>
+                                        <set_value name="$taxes" operation="add" exact="$tax"/>
+                                    </do_all>
+                                </do_if>
+                            </do_all>
+                            <do_if value="$totalStations gt 0">
+                                <set_value name="$textHeader" exact="'Tax Collection: \n'"/>
+                                <set_value name="$textBasic" exact="'%s credits collected from %s stations.'.[$taxes, $totalStations]"/>
+                                <show_notification text="$textHeader + $textBasic" timeout="10s"/>
+                                <write_to_logbook title="$textHeader" category="upkeep" text="$textBasic"
+                                                  money="($taxes)Cr"/>
+                                <reward_player money="($taxes)Cr"/>
+                            </do_if>
+                        </do_if>
+                    </actions>
+                </cue>
                 <!-- Every hour determine station costs -->
                 <cue name="LL_Base_Costs" instantiate="true" checkinterval="1h" checktime="player.age + 10s" namespace="this">
                     <actions>
-                        <do_if value="global.$lastChecked + 1h le player.age">
-                            <set_value name="global.$lastChecked" exact="player.age"/>
+                        <do_if value="global.$lastCheckedPayments + 1h le player.age">
+                            <set_value name="global.$lastCheckedPayments" exact="player.age"/>
                             <find_object name="$playerStations" recursive="true" owner="faction.player" class="class.station"
                                          multiple="true" space="player.galaxy"/>
                             <!--
-                            If player doesn't own stations continue cancel
+                            If player doesn't own stations cancel
                             -->
                             <do_if value="not $playerStations.count">
                                 <cancel_cue cue="this"/>
@@ -190,7 +245,7 @@
                     <event_cue_signalled/>
                 </check_any>
             </conditions>
-            <delay exact="2s"/>
+            <delay exact="5s"/>
             <actions>
                 <do_if value="event.param">
                     <signal_cue_instantly cue="LL_Base" param="event.param"/>
