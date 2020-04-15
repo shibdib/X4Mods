@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<diff>
+    <add sel="//cue[@name='Start']/actions">
+        <show_help duration="5s" custom="'Story Disabled - Research Completed.'"/>
+        <cancel_cue cue="this"/>
+    </add>
+</diff>
