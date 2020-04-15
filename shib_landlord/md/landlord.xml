@@ -25,7 +25,7 @@
                     <actions>
                         <do_if value="global.$lastCheckedCollector + 1h le player.age">
                             <set_value name="global.$lastCheckedCollector" exact="player.age"/>
-                            <find_sector name="$playerSectors" owner="faction.player"/>
+                            <find_sector name="$playerSectors" owner="faction.player" multiple="true"/>
                             <!--If player doesn't own sectors cancel-->
                             <do_if value="not $playerSectors.count">
                                 <cancel_cue cue="this"/>
