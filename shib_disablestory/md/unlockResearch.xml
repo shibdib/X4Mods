@@ -12,7 +12,6 @@
                 </check_any>
             </conditions>
             <actions>
-                <set_value name="global.$initialResearch" exact="true"/>
                 <set_value name="player.entity.$x4ep1_hq_research_unlocked"/>
                 <add_research ware="ware.research_module_defence"/>
                 <add_research ware="ware.research_module_habitation"/>

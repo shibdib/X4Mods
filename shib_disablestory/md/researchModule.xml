@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Used GettingPaid as a base -->
+<mdscript name="UnlockResearch" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="E:\x4\md\md.xsd">
+    <cues>
+        <!-- Unlock research when player builds a station with an admin center -->
+        <cue name="Research_Unlocks">
+            <conditions>
+                <check_any>
+                    <event_cue_signalled cue="md.Setup.GameStart"/>
+                    <event_player_created/>
+                    <event_player_built_station/>
+                    <event_player_build_finished/>
+                </check_any>
+            </conditions>
+            <actions>
+                <do_if value="not global.$initialResearchCheck">
+                    <set_value name="global.$initialResearchCheck" exact="null"/>
+                </do_if>
+                <find_object name="$playerStations" recursive="true" owner="faction.player" class="class.station"
+                             multiple="true" space="player.galaxy"/>
+                <!--If player doesn't own stations cancel-->
+                <do_if value="not $playerStations.count">
+                    <cancel_cue cue="this"/>
+                </do_if>
+                <do_all exact="$playerStations.count" counter="$c">
+                    <set_value name="$station" exact="$playerStations.{$c}"/>
+                    <find_object_component name="$stationComponents" object="$station" recursive="true" multiple="true" class="class.module"/>
+                    <!--If station doesn't have modules continue to the next-->
+                    <do_if value="not $stationComponents.count">
+                        <continue/>
+                    </do_if>
+                    <do_all exact="$stationComponents.count" counter="$c">
+                        <set_value name="$stationModule" exact="$stationComponents.{$c}"/>
+                        <!--Check for admin center-->
+                        <do_if value="$stationModule.canclaimownership and not global.$initialResearchCheck">
+                            <set_value name="global.$initialResearchCheck" exact="true"/>
+                            <set_value name="player.entity.$x4ep1_hq_research_unlocked"/>
+                            <add_research ware="ware.research_module_defence"/>
+                            <add_research ware="ware.research_module_habitation"/>
+                            <add_research ware="ware.research_module_production"/>
+                            <add_research ware="ware.research_module_storage"/>
+                            <add_research ware="ware.research_module_dock"/>
+                            <add_research ware="ware.research_module_build"/>
+                            <add_research ware="ware.research_teleportation"/>
+                            <add_research ware="ware.research_teleportation_range_01"/>
+                            <add_research ware="ware.research_teleportation_range_02"/>
+                            <add_research ware="ware.research_teleportation_range_03"/>
+                        </do_if>
+                        <!--If we have an admin center check for other research-->
+                        <do_if value="global.$initialResearchCheck">
+                            <!--Check for engine factory-->
+                            <do_if value="$stationModule.products.{engineparts}.exists">
+                                <add_research ware="ware.research_mod_engine_mk1"/>
+                                <add_research ware="ware.research_mod_engine_mk2"/>
+                                <add_research ware="ware.research_mod_engine_mk3"/>
+                                <set_value name="$Unlocked" exact="[ware.mod_engine_boostduration_01_mk1,
+                                      ware.mod_engine_boostthrust_01_mk1,
+                                      ware.mod_engine_boostthrust_02_mk1,
+                                      ware.mod_engine_forwardthrust_01_mk1,
+                                      ware.mod_engine_forwardthrust_02_mk1,
+                                      ware.mod_engine_rotationthrust_02_mk1,
+                                      ware.mod_engine_strafethrust_01_mk1,
+                                      ware.mod_engine_strafethrust_02_mk1,
+                                      ware.mod_engine_travelattacktime_01_mk1,
+                                      ware.mod_engine_travelchargetime_01_mk1,
+                                      ware.mod_engine_travelreleasetime_01_mk1,
+                                      ware.mod_engine_travelstartthrust_01_mk1,
+                                      ware.mod_engine_travelthrust_01_mk1,
+                                      ware.mod_engine_travelthrust_02_mk1,
+                                      ware.mod_engine_boostthrust_01_mk2,
+                                      ware.mod_engine_boostthrust_02_mk2,
+                                      ware.mod_engine_forwardthrust_01_mk2,
+                                      ware.mod_engine_forwardthrust_02_mk2,
+                                      ware.mod_engine_travelthrust_01_mk2,
+                                      ware.mod_engine_travelthrust_02_mk2,
+                                      ware.mod_engine_boostthrust_01_mk3,
+                                      ware.mod_engine_forwardthrust_01_mk3,
+                                      ware.mod_engine_rotationthrust_01_mk3,
+                                      ware.mod_engine_travelthrust_01_mk3,]"/>
+                            </do_if>
+                            <!--Check for shield factory-->
+                            <do_elseif value="$stationModule.products.{shieldcomponents}.exists">
+                                <add_research ware="ware.research_mod_shield_mk1"/>
+                                <add_research ware="ware.research_mod_shield_mk2"/>
+                                <add_research ware="ware.research_mod_shield_mk3"/>
+                                <set_value name="$Unlocked" exact="[ware.mod_shield_capacity_01_mk1,
+                                      ware.mod_shield_rechargedelay_01_mk1,
+                                      ware.mod_shield_rechargerate_01_mk1,
+                                      ware.mod_shield_capacity_01_mk2,
+                                      ware.mod_shield_rechargerate_01_mk2,
+                                      ware.mod_shield_capacity_01_mk3,
+                                      ware.mod_shield_capacity_02_mk3,
+                                      ware.mod_shield_rechargerate_01_mk3,]"/>
+                            </do_elseif>
+                            <!--Check for weapon factory-->
+                            <do_elseif value="$stationModule.products.{weaponcomponents}.exists">
+                                <add_research ware="ware.research_mod_weapon_mk1"/>
+                                <add_research ware="ware.research_mod_weapon_mk2"/>
+                                <add_research ware="ware.research_mod_weapon_mk3"/>
+                                <set_value name="$Unlocked" exact="[ware.mod_weapon_beamlength_01_mk1,
+                                      ware.mod_weapon_chargetime_01_mk1,
+                                      ware.mod_weapon_cooling_01_mk1,
+                                      ware.mod_weapon_cooling_02_mk1,
+                                      ware.mod_weapon_cooling_03_mk1,
+                                      ware.mod_weapon_damage_01_mk1,
+                                      ware.mod_weapon_damage_02_mk1,
+                                      ware.mod_weapon_damage_03_mk1,
+                                      ware.mod_weapon_lifetime_01_mk1,
+                                      ware.mod_weapon_mining_01_mk1,
+                                      ware.mod_weapon_reload_01_mk1,
+                                      ware.mod_weapon_rotationspeed_01_mk1,
+                                      ware.mod_weapon_speed_01_mk1,
+                                      ware.mod_weapon_sticktime_01_mk1,
+                                      ware.mod_weapon_surfaceelement_01_mk1,
+                                      ware.mod_weapon_cooling_01_mk2,
+                                      ware.mod_weapon_cooling_02_mk2,
+                                      ware.mod_weapon_cooling_03_mk2,
+                                      ware.mod_weapon_cooling_04_mk2,
+                                      ware.mod_weapon_cooling_05_mk2,
+                                      ware.mod_weapon_damage_01_mk2,
+                                      ware.mod_weapon_damage_02_mk2,
+                                      ware.mod_weapon_damage_03_mk2,
+                                      ware.mod_weapon_damage_04_mk2,
+                                      ware.mod_weapon_damage_05_mk2,
+                                      ware.mod_weapon_sticktime_01_mk2,
+                                      ware.mod_weapon_sticktime_02_mk2,
+                                      ware.mod_weapon_sticktime_03_mk2,
+                                      ware.mod_weapon_surfaceelement_01_mk2,
+                                      ware.mod_weapon_damage_01_mk3,
+                                      ware.mod_weapon_damage_02_mk3,
+                                      ware.mod_weapon_mining_01_mk3,
+                                      ware.mod_weapon_speed_01_mk3,
+                                      ware.mod_weapon_surfaceelement_01_mk3,]"/>
+                            </do_elseif>
+                            <!--Check for hull factory-->
+                            <do_elseif value="$stationModule.products.{hullparts}.exists">
+                                <add_research ware="ware.research_mod_ship_mk1"/>
+                                <add_research ware="ware.research_mod_ship_mk2"/>
+                                <add_research ware="ware.research_mod_ship_mk3"/>
+                                <set_value name="$Unlocked" exact="[ware.mod_ship_countermeasurecapacity_01_mk1,
+                                      ware.mod_ship_deployablecapacity_01_mk1,
+                                      ware.mod_ship_drag_01_mk1,
+                                      ware.mod_ship_mass_01_mk1,
+                                      ware.mod_ship_maxhull_01_mk1,
+                                      ware.mod_ship_missilecapacity_01_mk1,
+                                      ware.mod_ship_radarrange_01_mk1,
+                                      ware.mod_ship_unitcapacity_01_mk1,
+                                      ware.mod_ship_drag_01_mk2,
+                                      ware.mod_ship_mass_01_mk2,
+                                      ware.mod_ship_mass_01_mk3,]"/>
+                            </do_elseif>
+                            <do_if value="$Unlocked">
+                                <do_all exact="$Unlocked.count" counter="$i">
+                                    <add_encyclopedia_entry item="$Unlocked.{$i}.id" type="equipmentmods"/>
+                                    <add_blueprints wares="$Unlocked.{$i}"/>
+                                </do_all>
+                            </do_if>
+                        </do_if>
+                    </do_all>
+                </do_all>
+            </actions>
+        </cue>
+    </cues>
+</mdscript>
