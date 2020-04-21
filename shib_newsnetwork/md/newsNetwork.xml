@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Used GettingPaid as a base -->
+<mdscript name="NewsNetwork" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="E:\x4\md\md.xsd">
+    <cues>
+        <cue name="News_Base">
+            <conditions>
+                <check_any>
+                    <event_cue_signalled cue="md.Setup.GameStart"/>
+                    <event_player_created/>
+                    <event_cue_signalled/>
+                </check_any>
+            </conditions>
+            <actions>
+                <!-- [1.sector count, 2.contested sector count, -->
+                <create_list name="global.$oldFactionInfo"/>
+                <create_list name="global.$factionInfo"/>
+                <show_help duration="5s" custom="'Shib News Network Installed.'"/>
+            </actions>
+        </cue>
+        <!-- Every half hour provide a report -->
+        <cue name="News_Half_Hour" instantiate="true" checkinterval="1800s" checktime="player.age + 15s" namespace="this">
+            <actions>
+                <!-- Handle initial where we have no old info -->
+                <do_if value="not global.$oldFactionInfo.count">
+                    <include_actions ref="GetFactionInfo"/>
+                </do_if>
+            </actions>
+        </cue>
+        <!-- Urgent Reports -->
+        <!-- System Captured -->
+        <!-- input: $factionOne, $factionTwo, $uiChangeAmount -->
+        <library name="GetFactionInfo">
+            <actions>
+                <do_all exact="faction.count" counter="$c">
+                    <set_value name="$currentFaction" exact="faction.{$c}"/>
+                    <create_list name="$factionData"/>
+                    <!-- Sector Info -->
+                    <find_sector name="$sectors" multiple="true" owner="$currentFaction"/>
+                    <find_sector name="$contestingSectors" multiple="true" contestedby="$currentFaction" s/>
+                    <find_ship space=""
+                </do_all>
+            </actions>
+        </library>
+    </cues>
+</mdscript>
