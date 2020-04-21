@@ -2,7 +2,7 @@
 
 <!-- Used GettingPaid as a base -->
 <mdscript name="Landlord" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:noNamespaceSchemaLocation="E:\x4\md\md.xsd">
+          xsi:noNamespaceSchemaLocation="http://x4libonline.ddns.net/libraries/md.xsd">
     <cues>
         <cue name="LL_Base">
             <conditions>
@@ -33,6 +33,7 @@
                             <!--Iterate thru owned sectors-->
                             <set_value name="$totalStations" exact="0"/>
                             <set_value name="$taxes" exact="0ct"/>
+                            <create_list name="$stationList"/>
                             <do_all exact="$playerSectors.count" counter="$c">
                                 <set_value name="$sector" exact="$playerSectors.{$c}"/>
                                 <find_object name="$stations" recursive="true" class="class.station" multiple="true" space="$sector" known="true">
@@ -63,14 +64,19 @@
                                         </do_if>
                                         <set_value name="$tax" exact="($plotCost * $taxMulti)ct"/>
                                         <set_value name="$taxes" operation="add" exact="$tax"/>
+                                        <append_to_list name="$stationList" exact="[$station.knownname, $station.sector.knownname, $tax]"/>
                                     </do_all>
                                 </do_if>
                             </do_all>
                             <do_if value="$totalStations gt 0">
                                 <set_value name="$textHeader" exact="'Tax Collection: \n'"/>
                                 <set_value name="$textBasic" exact="'%s credits collected from %s stations.'.[$taxes, $totalStations]"/>
+                                <set_value name="$textDetailed" exact="'Detailed Overview:\nTaxes Received: %s Credits\n\nStation Details:'.[$taxes]"/>
+                                <do_all exact="$stationList.count" counter="$c">
+                                    <set_value name="$textDetailed" operation="add" exact="'\n%s (%s) - Tax: %s Credits'.[$stationList.{$c}.{1}, $stationList.{$c}.{2}, $stationList.{$c}.{3}]"/>
+                                </do_all>
                                 <show_notification text="$textHeader + $textBasic" timeout="10s"/>
-                                <write_to_logbook title="$textHeader" category="upkeep" text="$textBasic"
+                                <write_to_logbook title="$textHeader" category="upkeep" text="$textDetailed"
                                                   money="($taxes)Cr"/>
                                 <reward_player money="($taxes)Cr"/>
                             </do_if>
