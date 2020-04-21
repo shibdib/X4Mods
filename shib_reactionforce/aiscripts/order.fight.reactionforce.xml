@@ -15,6 +15,10 @@
                 <input_param name="max" value="[@this.ship.pilot.skill.piloting * 3, 1].max"/>
                 <input_param name="step" value="1"/>
             </param>
+            <!-- Respond to ships? -->
+            <param name="shipResponse" type="bool" default="true" text="Respond To Ships" comment="Should we respond to ships that are under attack?"/>
+            <!-- Respond to stations? -->
+            <param name="stationResponse" type="bool" default="true" text="Respond To Stations" comment="Should we respond to stations that are under attack?"/>
         </params>
         <requires>
             <match shiptype="shiptype.lasertower" negate="true"/>
@@ -30,7 +34,10 @@
         <handler>
             <conditions>
                 <event_player_owned_attacked/>
+                <!-- Make sure object is actually taking damage and needs help -->
                 <check_value value="(event.object.hullpercentage + event.object.shieldpercentage) lt (95 + (55 * (event.object.maxshield != 0)))"/>
+                <!-- Make sure response type is enabled -->
+                <check_value value="(event.object.isclass.station and $stationResponse == true) or (event.object.isclass.ship and $shipResponse == true)"/>
             </conditions>
             <actions>
                 <do_if value="$responseTarget == null">
@@ -67,9 +74,11 @@
             <do_if value="$responseTarget != null">
                 <!-- Check if target is no longer damaged enough or under attack -->
                 <do_if value="((event.object.hullpercentage + event.object.shieldpercentage) ge (95 + (55 * (event.object.maxshield != 0)))) or ($responseTime + 30s) lt player.age">
-                    <set_value name="$responseTime" exact="null"/>
-                    <set_value name="$responseTarget" exact="null"/>
-                    <set_value name="$responding" exact="null"/>
+                    <do_if value="this.order.id != 'Attack'">
+                        <set_value name="$responseTime" exact="null"/>
+                        <set_value name="$responseTarget" exact="null"/>
+                        <set_value name="$responding" exact="null"/>
+                    </do_if>
                 </do_if>
                 <!-- If not already dispatched -->
                 <do_elseif value="$responding == null">
