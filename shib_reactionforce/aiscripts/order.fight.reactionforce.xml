@@ -1,0 +1,123 @@
+<aiscript name="reactionforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://x4libonline.ddns.net/libraries/aiscripts.xsd" version="1">
+    <!-- Setup context menu order-->
+    <order id="ReactionForce" name="Reaction Force" description="Reacts to enemies attacking your assets nearby." category="combat" infinite="true">
+        <params>
+            <!-- Where the reaction force will base itself -->
+            <param name="home" default="this.sector" type="object" text="Home" comment="Home Sector/Station">
+                <input_param name="class" value="[class.sector,class.station]"/>
+            </param>
+            <!-- Should we dock when idle? -->
+            <param name="dockWhenIdle" type="bool" default="false" text="Dock When Idle" comment="When idle should we dock. If false or home is not a station we will patrol our home system."/>
+            <!-- Max range this force will respond -->
+            <param name="responseRange" default="1" type="number" text="Response Range" comment="Max range this force will respond from home.">
+                <input_param name="startvalue" value="0"/>
+                <input_param name="min" value="0"/>
+                <input_param name="max" value="[@this.ship.pilot.skill.piloting * 3, 1].max"/>
+                <input_param name="step" value="1"/>
+            </param>
+        </params>
+        <requires>
+            <match shiptype="shiptype.lasertower" negate="true"/>
+        </requires>
+    </order>
+    <interrupts>
+        <handler ref="SectorChangeHandler"/>
+        <handler ref="ScannedHandler"/>
+        <handler ref="InspectedHandler"/>
+        <handler ref="TargetInvalidHandler"/>
+        <handler ref="ResupplyHandler"/>
+        <!-- If player owned object is attacked, check if it is in range of the reaction force -->
+        <handler>
+            <conditions>
+                <event_player_owned_attacked/>
+                <check_value value="(event.object.hullpercentage + event.object.shieldpercentage) lt (95 + (55 * (event.object.maxshield != 0)))"/>
+            </conditions>
+            <actions>
+                <do_if value="$responseTarget == null">
+                    <do_if value="$home.isclass.space">
+                        <set_value name="$base" exact="$home"/>
+                    </do_if>
+                    <do_elseif value="$home.isclass.station">
+                        <set_value name="$base" exact="$home.sector"/>
+                    </do_elseif>
+                    <find_sector_in_range object="$base" multiple="true" distances="$sectorTable" maxdistance="$responseRange"/>
+                    <set_value name="$inRangeSectors" exact="$sectorTable.keys.sorted"/>
+                    <remove_value name="$sectorTable"/>
+                    <do_if value="$inRangeSectors.indexof.{event.object.sector}" chance="this.ship.pilot.skill.piloting * 30">
+                        <set_value name="$responseTarget" exact="event.object"/>
+                        <set_value name="$responseTime" exact="player.age"/>
+                        <set_value name="$responding" exact="null"/>
+                        <set_value name="$idling" exact="null"/>
+                    </do_if>
+                </do_if>
+            </actions>
+        </handler>
+    </interrupts>
+    <init>
+        <set_value name="$started" exact="player.age"/>
+        <set_value name="$responseTime" exact="null"/>
+        <set_value name="$responseTarget" exact="null"/>
+        <set_value name="$responding" exact="null"/>
+        <set_value name="$idling" exact="null"/>
+    </init>
+    <attention min="unknown">
+        <actions>
+            <label name="start"/>
+            <!-- Handle if response target is set -->
+            <do_if value="$responseTarget != null">
+                <!-- Check if target is no longer damaged enough or under attack -->
+                <do_if value="((event.object.hullpercentage + event.object.shieldpercentage) ge (95 + (55 * (event.object.maxshield != 0)))) or ($responseTime + 30s) lt player.age">
+                    <set_value name="$responseTime" exact="null"/>
+                    <set_value name="$responseTarget" exact="null"/>
+                    <set_value name="$responding" exact="null"/>
+                </do_if>
+                <!-- If not already dispatched -->
+                <do_elseif value="$responding == null">
+                    <cancel_all_orders object="this.ship"/>
+                    <set_value name="$responding" exact="true"/>
+                    <set_value name="$idling" exact="null"/>
+                    <!-- If it's a station protect the station -->
+                    <do_if value="$responseTarget.isclass.station">
+                        <create_order id="'ProtectStation'" object="this.ship" immediate="true" >
+                            <param name="station" value="$responseTarget"/>
+                        </create_order>
+                    </do_if>
+                    <!-- If it's a ship protect the ship -->
+                    <do_elseif value="$responseTarget.isclass.ship">
+                        <create_order id="'ProtectShip'" object="this.ship" immediate="true">
+                            <param name="target" value="$responseTarget"/>
+                        </create_order>
+                    </do_elseif>
+                </do_elseif>
+            </do_if>
+            <!-- If no response target it set and ship doesn't already have idle orders -->
+            <do_elseif value="$idling == null">
+                <cancel_all_orders object="this.ship"/>
+                <set_value name="$responseTime" exact="null"/>
+                <set_value name="$responding" exact="null"/>
+                <set_value name="$idling" exact="true"/>
+                <!-- If home is a station -->
+                <do_if value="$home.isclass.station">
+                    <!-- If you should dock do so -->
+                    <do_if value="$dockWhenIdle == true">
+                        <create_order id="'DockAt'" object="this.ship" immediate="true">
+                            <param name="destination" value="$home"/>
+                        </create_order>
+                    </do_if>
+                    <!-- Otherwise protect your home station -->
+                    <do_else>
+                        <create_order id="'ProtectStation'" object="this.ship" immediate="true">
+                            <param name="station" value="$home"/>
+                        </create_order>
+                    </do_else>
+                </do_if>
+                <!-- If home is a sector patrol the sector -->
+                <do_else>
+                    <create_order id="'Patrol'" object="this.ship" immediate="true">
+                        <param name="space" value="$home"/>
+                    </create_order>
+                </do_else>
+            </do_elseif>
+        </actions>
+    </attention>
+</aiscript>

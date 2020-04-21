@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<content id="ShibReactionForce" name="Reaction Force" author="Shibdib" version="1" date="2020-04-21" save="0" description="Adds a multi sector reaction force command." enabled="1">
+ <text language="44" name="Reaction Force" author="Shibdib" description="Adds a multi sector reaction force command." />
+</content>
