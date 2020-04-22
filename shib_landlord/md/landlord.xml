@@ -14,7 +14,7 @@
             </conditions>
             <actions>
                 <show_help duration="5s" custom="'Landlord Installed.'"/>
-                <set_value name="global.$lastCheckedPayments" exact="player.age - 1h"/>
+                <set_value name="global.$lastCheckedPayments" exact="player.age"/>
                 <set_value name="global.$lastCheckedCollector" exact="player.age - 1h"/>
                 <set_value name="global.$missedPayment" exact="0"/>
                 <set_value name="global.$missedTax" exact="0"/>
