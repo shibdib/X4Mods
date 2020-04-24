@@ -4,7 +4,7 @@
         <params>
             <!-- Where the reaction force will base itself -->
             <param name="home" default="this.sector" type="object" text="Home" comment="Home Sector/Station">
-                <input_param name="class" value="[class.sector,class.station]"/>
+                <input_param name="class" value="if this.ship.isclass.[class.ship_s, class.ship_xs] then [class.sector, class.station, class.ship_m, class.ship_l, class.ship_xl] else [class.sector, class.station, class.ship_l, class.ship_xl]"/>
             </param>
             <!-- Should we dock when idle? -->
             <param name="dockWhenIdle" type="bool" default="false" text="Dock When Idle" comment="When idle should we dock. If false or home is not a station we will patrol our home system."/>
@@ -59,9 +59,9 @@
                     <do_if value="$home.isclass.space">
                         <set_value name="$base" exact="$home"/>
                     </do_if>
-                    <do_elseif value="$home.isclass.station">
+                    <do_else>
                         <set_value name="$base" exact="$home.sector"/>
-                    </do_elseif>
+                    </do_else>
                     <find_sector_in_range object="$base" multiple="true" distances="$sectorTable" maxdistance="$responseRange"/>
                     <set_value name="$inRangeSectors" exact="$sectorTable.keys.sorted"/>
                     <remove_value name="$sectorTable"/>
@@ -120,7 +120,7 @@
                 <set_value name="$responding" exact="null"/>
                 <set_value name="$idling" exact="true"/>
                 <!-- If home is a station -->
-                <do_if value="$home.isclass.station">
+                <do_if value="not $home.isclass.space and ((this.ship.isclass.[class.ship_s, class.ship_xs] and $home.isclass.[class.station, class.ship_m, class.ship_l, class.ship_xl]) or (this.ship.isclass.[class.ship_m] and $home.isclass.[class.station, class.ship_l, class.ship_xl]))">
                     <!-- If you should dock do so -->
                     <do_if value="$dockWhenIdle == true">
                         <do_if value="this.ship.assigneddock == null or this.ship.assigneddock.knownname != $home.knownname">
