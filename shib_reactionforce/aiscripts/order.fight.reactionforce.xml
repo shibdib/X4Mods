@@ -17,8 +17,22 @@
             </param>
             <!-- Respond to ships? -->
             <param name="shipResponse" type="bool" default="true" text="Respond To Ships" comment="Should we respond to ships that are under attack?"/>
+            <!-- What percent of remaining hp/shields should get a response -->
+            <param name="hpCutoffShip" default="1" type="number" text="HP% Response Point (Ships)" comment="The HP (Hull + Shield) Percentage to trigger a response.">
+                <input_param name="startvalue" value="85"/>
+                <input_param name="min" value="1"/>
+                <input_param name="max" value="99"/>
+                <input_param name="step" value="1"/>
+            </param>
             <!-- Respond to stations? -->
             <param name="stationResponse" type="bool" default="true" text="Respond To Stations" comment="Should we respond to stations that are under attack?"/>
+            <!-- What percent of remaining hp/shields should get a response -->
+            <param name="hpCutoffStation" default="1" type="number" text="HP% Response Point (Stations)" comment="The HP (Hull + Shield) Percentage to trigger a response.">
+                <input_param name="startvalue" value="98"/>
+                <input_param name="min" value="1"/>
+                <input_param name="max" value="99"/>
+                <input_param name="step" value="1"/>
+            </param>
         </params>
         <requires>
             <match shiptype="shiptype.lasertower" negate="true"/>
@@ -34,10 +48,11 @@
         <handler>
             <conditions>
                 <event_player_owned_attacked/>
-                <!-- Make sure object is actually taking damage and needs help -->
-                <check_value value="(event.object.hullpercentage + event.object.shieldpercentage) lt (95 + (55 * (event.object.maxshield != 0)))"/>
-                <!-- Make sure response type is enabled -->
-                <check_value value="(event.object.isclass.station and $stationResponse == true) or (event.object.isclass.ship and $shipResponse == true)"/>
+                <!-- Make sure it's weapon damage-->
+                <check_value value="event.param2 == 'killmethod.hitbybullet' or event.param2 == 'killmethod.hitbymissile'"/>
+                <!-- Make sure response type is enabled and damage threshold met -->
+                <check_value value="(event.object.isclass.station and $stationResponse == true and (event.object.hullpercentage + event.object.shieldpercentage) lt ($hpCutoffStation + ($hpCutoffStation * (event.object.maxshield != 0)))) or
+                (event.object.isclass.ship and $shipResponse == true and (event.object.hullpercentage + event.object.shieldpercentage) lt ($hpCutoffShip + ($hpCutoffShip * (event.object.maxshield != 0))))"/>
             </conditions>
             <actions>
                 <do_if value="$responseTarget == null">
