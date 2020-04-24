@@ -9,7 +9,7 @@
             <!-- Should we dock when idle? -->
             <param name="dockWhenIdle" type="bool" default="false" text="Dock When Idle" comment="When idle should we dock. If false or home is not a station we will patrol our home system."/>
             <!-- Max range this force will respond -->
-            <param name="responseRange" default="1" type="number" text="Response Range" comment="Max range this force will respond from home.">
+            <param name="responseRange" default="1" type="number" text="Response Range (Jumps)" comment="Max range this force will respond from home.">
                 <input_param name="startvalue" value="0"/>
                 <input_param name="min" value="0"/>
                 <input_param name="max" value="[@this.ship.pilot.skill.piloting * 3, 1].max"/>
