@@ -101,7 +101,6 @@
             </do_if>
             <!-- If no response target it set and ship doesn't already have idle orders -->
             <do_elseif value="$idling == null">
-                <cancel_all_orders object="this.ship"/>
                 <set_value name="$responseTime" exact="null"/>
                 <set_value name="$responding" exact="null"/>
                 <set_value name="$idling" exact="true"/>
@@ -109,23 +108,28 @@
                 <do_if value="$home.isclass.station">
                     <!-- If you should dock do so -->
                     <do_if value="$dockWhenIdle == true">
-                        <create_order id="'DockAt'" object="this.ship" immediate="true">
-                            <param name="destination" value="$home"/>
-                        </create_order>
+                        <do_if value="this.ship.assigneddock == null or this.ship.assigneddock.knownname != $home.knownname">
+                            <cancel_all_orders object="this.ship"/>
+                            <create_order id="'DockAndWait'" object="this.ship" immediate="true">
+                                <param name="destination" value="$home"/>
+                            </create_order>
+                        </do_if>
                     </do_if>
                     <!-- Otherwise protect your home station -->
-                    <do_else>
+                    <do_elseif value="this.order.id != 'ProtectStation'">
+                        <cancel_all_orders object="this.ship"/>
                         <create_order id="'ProtectStation'" object="this.ship" immediate="true">
                             <param name="station" value="$home"/>
                         </create_order>
-                    </do_else>
+                    </do_elseif>
                 </do_if>
                 <!-- If home is a sector patrol the sector -->
-                <do_else>
+                <do_elseif value="this.order.id != 'Patrol'">
+                    <cancel_all_orders object="this.ship"/>
                     <create_order id="'Patrol'" object="this.ship" immediate="true">
                         <param name="space" value="$home"/>
                     </create_order>
-                </do_else>
+                </do_elseif>
             </do_elseif>
         </actions>
     </attention>
