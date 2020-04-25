@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+CHANGES
+- Disable collisions between large miners and drones trying to dock with them
+-->
+<diff>
+    <add sel="/aiscript/actions" pos="prepend">
+        <do_if value="this.isclass.ship and this.typename.smalldrone">
+            <disable_collision_response object="this.ship"/>
+        </do_if>
+    </add>
+</diff>
