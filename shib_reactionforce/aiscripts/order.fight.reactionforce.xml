@@ -125,8 +125,15 @@
                     <do_if value="$dockWhenIdle == true">
                         <do_if value="this.ship.assigneddock == null or this.ship.assigneddock.knownname != $home.knownname">
                             <cancel_all_orders object="this.ship"/>
-                            <create_order id="'DockAndWait'" object="this.ship" immediate="true">
+                            <!-- Subordinates should dock as well (will dock on you or at the same station) -->
+                            <do_if value="this.ship.subordinates.count">
+                                <create_order id="'RecallSubordinates'" object="this.ship">
+                                    <param name="safetodockat" value="$home"/>
+                                </create_order>
+                            </do_if>
+                            <create_order id="'DockAndWait'" object="this.ship">
                                 <param name="destination" value="$home"/>
+                                <param name="dockfollowers" value="true"/>
                             </create_order>
                         </do_if>
                     </do_if>

@@ -5,7 +5,7 @@ CHANGES
 -->
 <diff>
     <add sel="/aiscript/actions" pos="prepend">
-        <do_if value="this.isclass.ship and this.typename.smalldrone">
+        <do_if value="this.isclass.ship and (this.typename.smalldrone or this.typename.xsdrone)">
             <disable_collision_response object="this.ship"/>
         </do_if>
     </add>
