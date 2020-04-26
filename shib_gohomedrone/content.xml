@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="ws_2074074957" name="Go Home Drone" author="Shibdib" version="11" date="2020-04-25" save="0" description="Makes drone docking noclip." enabled="1" sync="false" lastupdate="1587847167">
-  <text language="44" name="Go Home Drone" author="Shibdib" description="Makes drone docking noclip."/>
+<content id="ws_2074074957" name="Go Home Drone" author="Shibdib" version="12" date="2020-04-25" save="0" description="Makes drone dock faster." enabled="1" sync="false" lastupdate="1587848034">
+  <text language="44" name="Go Home Drone" author="Shibdib" description="Makes drone dock faster."/>
 </content>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+CHANGES
+- Tweak the length of time a ship will wait for no good reason
+-->
+<diff>
+    <replace sel="/aiscript/order/params/param[@name='timeout']">
+        <param name="timeout" type="time" default="75s" text="{1041, 10034}" advanced="true" comment="Duration">
+            <input_param name="min" value="0s"/>
+            <input_param name="max" value="24h"/>
+            <input_param name="step" value="30s"/>
+        </param>
+    </replace>
+</diff>

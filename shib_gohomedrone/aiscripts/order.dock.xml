@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
 CHANGES
-- Disable collisions between large miners and drones trying to dock with them
+- Drones will no longer "dock" and will be collected by the ship once they are close.
 -->
 <diff>
-    <add sel="/aiscript/actions" pos="prepend">
-        <do_if value="this.isclass.ship and (this.typename.smalldrone or this.typename.xsdrone)">
-            <disable_collision_response object="this.ship"/>
+    <add sel="/aiscript/attention/actions" pos="prepend">
+        <do_if value="this.ship and this.ship.typename == 'Drone'">
+            <do_if value="this.bboxdistanceto.{$destination} le 250">
+                <debug_text text="'SHIB DRONE DOCK - Initial Dock'"/>
+                <cancel_all_orders object="this.ship"/>
+                <collect_unit object="$destination" unit="this.ship"/>
+                <resume label="finish"/>
+            </do_if>
+            <do_else>
+                <!-- Move to destination -->
+                <create_order object="this.ship" id="'MoveToObject'" immediate="true">
+                    <param name="destination" value="$destination"/>
+                </create_order>
+                <debug_text text="'SHIB DRONE DOCK - Moving'"/>
+                <wait exact="20s"/>
+                <debug_text text="'SHIB DRONE DOCK - Secondary Dock'"/>
+                <cancel_all_orders object="this.ship"/>
+                <collect_unit object="$destination" unit="this.ship"/>
+                <resume label="finish"/>
+            </do_else>
         </do_if>
     </add>
 </diff>
