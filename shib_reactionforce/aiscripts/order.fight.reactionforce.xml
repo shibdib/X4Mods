@@ -12,7 +12,7 @@
             <param name="responseRange" default="1" type="number" text="Response Range (Jumps)" comment="Max range this force will respond from home.">
                 <input_param name="startvalue" value="0"/>
                 <input_param name="min" value="0"/>
-                <input_param name="max" value="[this.ship.pilot.skill.piloting / 2, 2].max"/>
+                <input_param name="max" value="[this.ship.pilot.skill.piloting / 2, 3].max"/>
                 <input_param name="step" value="1"/>
             </param>
             <!-- Respond to ships? -->
@@ -33,6 +33,8 @@
                 <input_param name="max" value="99"/>
                 <input_param name="step" value="1"/>
             </param>
+            <!-- Would you like to receive a notification when this ship is dispatched? -->
+            <param name="notifyMe" type="bool" default="false" text="Enable Notifications" comment="Would you like to get notifications when this ship is dispatched?"/>
         </params>
         <requires>
             <match shiptype="shiptype.lasertower" negate="true"/>
@@ -72,7 +74,6 @@
                         <set_value name="$responseTime" exact="player.age"/>
                         <set_value name="$responding" exact="null"/>
                         <set_value name="$idling" exact="null"/>
-                        <resume label="start"/>
                     </do_if>
                 </do_if>
             </actions>
@@ -85,16 +86,17 @@
         <set_value name="$responseTarget" exact="null"/>
         <set_value name="$responding" exact="null"/>
         <set_value name="$idling" exact="null"/>
+        <set_order_syncpoint_reached order="this.ship.order" />
     </init>
     <attention min="unknown">
         <actions>
             <label name="start"/>
-            <debug_text text="'SHIB Reaction Force - LOOP START'"/>
             <!-- Handle if response target is set -->
             <do_if value="$responseTarget != null">
                 <!-- Check if target is no longer damaged enough or under attack -->
-                <do_if value="((event.object.hullpercentage + event.object.shieldpercentage) ge (95 + (55 * (event.object.maxshield != 0)))) or ($responseTime + 30s) lt player.age">
-                    <do_if value="this.order.id != 'Attack'">
+                <do_if value="($responseTarget.isclass.station and $stationResponse == true and ($responseTarget.hullpercentage + $responseTarget.shieldpercentage) gt ($hpCutoffStation + ($hpCutoffStation * ($responseTarget.maxshield != 0)))) or
+                ($responseTarget.isclass.ship and $shipResponse == true and ($responseTarget.hullpercentage + $responseTarget.shieldpercentage) gt ($hpCutoffShip + ($hpCutoffShip * ($responseTarget.maxshield != 0))))">
+                    <do_if value="($responseTime + 120s) lt player.age">
                         <debug_text text="'SHIB Reaction Force - Cancel Response'"/>
                         <set_value name="$responseTime" exact="null"/>
                         <set_value name="$responseTarget" exact="null"/>
@@ -103,6 +105,11 @@
                 </do_if>
                 <!-- If not already dispatched -->
                 <do_elseif value="$responding == null" chance="this.ship.pilot.skill.piloting * 20">
+                    <!-- Handle notifications/Log -->
+                    <do_if value="$notifyMe">
+                        <show_notification text="'REACTION FORCE:\n%s has been dispatched to %s'.[this.ship.knownname, $responseTarget.knownname]" priority="9"/>
+                    </do_if>
+                    <write_to_logbook category="alerts" title="'REACTION FORCE DISPATCHED:'" text="'REACTION FORCE:\n%s has been dispatched to %s'.[this.ship.knownname, $responseTarget.knownname]"/>
                     <debug_text text="'SHIB Reaction Force - Response Needed'"/>
                     <cancel_all_orders object="this.ship"/>
                     <set_value name="$responding" exact="true"/>
@@ -110,16 +117,18 @@
                     <!-- If it's a station protect the station -->
                     <do_if value="$responseTarget.isclass.station">
                         <debug_text text="'SHIB Reaction Force - Respond to Station %s'.[$responseTarget.knownname]"/>
-                        <create_order id="'ProtectStation'" object="this.ship" immediate="true" >
+                        <set_command command="command.protect" param="$home"/>
+                        <run_script name="'order.fight.protect.station'">
                             <param name="station" value="$responseTarget"/>
-                        </create_order>
+                        </run_script>
                     </do_if>
                     <!-- If it's a ship protect the ship -->
                     <do_elseif value="$responseTarget.isclass.ship">
                         <debug_text text="'SHIB Reaction Force - Respond to Ship %s'.[$responseTarget.knownname]"/>
-                        <create_order id="'ProtectShip'" object="this.ship" immediate="true">
+                        <set_command command="command.protect" param="$home"/>
+                        <run_script name="'order.fight.protect.ship'">
                             <param name="target" value="$responseTarget"/>
-                        </create_order>
+                        </run_script>
                     </do_elseif>
                 </do_elseif>
             </do_if>
@@ -135,41 +144,30 @@
                     <do_if value="$dockWhenIdle == true">
                         <do_if value="this.ship.assigneddock == null or this.ship.assigneddock.knownname != $home.knownname">
                             <debug_text text="'SHIB Reaction Force - Dock And Wait'"/>
-                            <cancel_all_orders object="this.ship"/>
-                            <create_order id="'DockAndWait'" object="this.ship">
+                            <set_command command="command.dockat" param="$home"/>
+                            <run_script name="'order.dock'">
                                 <param name="destination" value="$home"/>
-                            </create_order>
-                        </do_if>
-                        <!-- Subordinates should dock as well (will dock on you or at the same station) -->
-                        <do_if value="this.ship.subordinates.count">
-                            <do_all exact="this.ship.subordinates.count" counter="$f">
-                                <set_value name="$subordinate" exact="this.ship.subordinates.{$f}"/>
-                                <do_if value="$subordinate.ship.assigneddock == null or $subordinate.ship.assigneddock.knownname != $home.knownname">
-                                    <debug_text text="'SHIB Reaction Force - Dock Subordinate'"/>
-                                    <create_order id="'DockAt'" object="$subordinate.ship">
-                                        <param name="destination" value="$home"/>
-                                    </create_order>
-                                </do_if>
-                            </do_all>
+                                <param name="dockfollowers" value="true"/>
+                            </run_script>
                         </do_if>
                     </do_if>
                     <!-- Otherwise protect your home station -->
-                    <do_elseif value="this.order.id != 'ProtectStation'">
+                    <do_else>
                         <debug_text text="'SHIB Reaction Force - Idle Station Guard'"/>
-                        <cancel_all_orders object="this.ship"/>
-                        <create_order id="'ProtectStation'" object="this.ship" immediate="true">
+                        <set_command command="command.protect" param="$home"/>
+                        <run_script name="'order.fight.protect.station'">
                             <param name="station" value="$home"/>
-                        </create_order>
-                    </do_elseif>
+                        </run_script>
+                    </do_else>
                 </do_if>
                 <!-- If home is a sector patrol the sector -->
-                <do_elseif value="this.order.id != 'Patrol'">
+                <do_else>
                     <debug_text text="'SHIB Reaction Force - Idle Sector Patrol'"/>
-                    <cancel_all_orders object="this.ship"/>
-                    <create_order id="'Patrol'" object="this.ship" immediate="true">
+                    <set_command command="command.patrol"/>
+                    <run_script name="'order.fight.patrol'">
                         <param name="space" value="$home"/>
-                    </create_order>
-                </do_elseif>
+                    </run_script>
+                </do_else>
             </do_elseif>
             <wait min="20s" max="60s"/>
             <resume label="start"/>
