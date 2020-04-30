@@ -120,6 +120,8 @@
                         <set_value name="$idling" exact="null"/>
                     </do_if>
                     <do_else>
+                        <!-- Get some XP for responding -->
+                        <apply_experience entity="this" experience="ship_disable_easy"/>
                         <set_value name="$responseTime" exact="player.age"/>
                         <!-- Handle notifications/Log -->
                         <do_if value="$notifyMe">
