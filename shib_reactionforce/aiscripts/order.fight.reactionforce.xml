@@ -71,7 +71,7 @@
                     </do_else>
                     <set_value name="$distance" exact="$base.gatedistance.{event.object.sector}"/>
                     <do_if value="$responseRange ge $distance">
-                        <debug_text text="'SHIB Reaction Force - Range Check (%s Max - %s Actual)'.[$distance, $responseRange]"/>
+                        <debug_text text="'SHIB Reaction Force - Range Check (%s Actual - %s Max)'.[$distance, $responseRange]"/>
                         <debug_text text="'SHIB Reaction Force - Attack checks passed, setting response target - %s - For response force - %s'.[event.object.knownname, this.ship.knownname]"/>
                         <set_value name="$responseTarget" exact="event.object"/>
                         <set_value name="$responding" exact="null"/>
@@ -121,7 +121,7 @@
                     </do_if>
                     <do_else>
                         <!-- Get some XP for responding -->
-                        <apply_experience entity="this" experience="ship_disable_easy"/>
+                        <apply_experience entity="this" experience="'ship_disable_easy'" chance="20"/>
                         <set_value name="$responseTime" exact="player.age"/>
                         <!-- Handle notifications/Log -->
                         <do_if value="$notifyMe">
