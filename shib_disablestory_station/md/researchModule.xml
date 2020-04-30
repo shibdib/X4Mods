@@ -30,27 +30,27 @@
                     <do_if value="not $stationComponents.count">
                         <continue/>
                     </do_if>
+                    <!--Check for admin center-->
+                    <do_if value="not global.$initialResearchCheck">
+                        <set_value name="global.$initialResearchCheck" exact="true"/>
+                        <set_value name="player.entity.$x4ep1_hq_research_unlocked"/>
+                        <add_research ware="ware.research_module_defence"/>
+                        <add_research ware="ware.research_module_habitation"/>
+                        <add_research ware="ware.research_module_production"/>
+                        <add_research ware="ware.research_module_storage"/>
+                        <add_research ware="ware.research_module_dock"/>
+                        <add_research ware="ware.research_module_build"/>
+                        <add_research ware="ware.research_teleportation"/>
+                        <add_research ware="ware.research_teleportation_range_01"/>
+                        <add_research ware="ware.research_teleportation_range_02"/>
+                        <add_research ware="ware.research_teleportation_range_03"/>
+                    </do_if>
                     <do_all exact="$stationComponents.count" counter="$c">
                         <set_value name="$stationModule" exact="$stationComponents.{$c}"/>
-                        <!--Check for admin center-->
-                        <do_if value="$stationModule.canclaimownership and not global.$initialResearchCheck">
-                            <set_value name="global.$initialResearchCheck" exact="true"/>
-                            <set_value name="player.entity.$x4ep1_hq_research_unlocked"/>
-                            <add_research ware="ware.research_module_defence"/>
-                            <add_research ware="ware.research_module_habitation"/>
-                            <add_research ware="ware.research_module_production"/>
-                            <add_research ware="ware.research_module_storage"/>
-                            <add_research ware="ware.research_module_dock"/>
-                            <add_research ware="ware.research_module_build"/>
-                            <add_research ware="ware.research_teleportation"/>
-                            <add_research ware="ware.research_teleportation_range_01"/>
-                            <add_research ware="ware.research_teleportation_range_02"/>
-                            <add_research ware="ware.research_teleportation_range_03"/>
-                        </do_if>
                         <!--If we have an admin center check for other research-->
                         <do_if value="global.$initialResearchCheck">
                             <!--Check for engine factory-->
-                            <do_if value="$stationModule.products.{engineparts}.exists">
+                            <do_if value="$stationModule.canbuildequipment.engineparts">
                                 <add_research ware="ware.research_mod_engine_mk1"/>
                                 <add_research ware="ware.research_mod_engine_mk2"/>
                                 <add_research ware="ware.research_mod_engine_mk3"/>
@@ -80,7 +80,7 @@
                                       ware.mod_engine_travelthrust_01_mk3,]"/>
                             </do_if>
                             <!--Check for shield factory-->
-                            <do_elseif value="$stationModule.products.{shieldcomponents}.exists">
+                            <do_elseif value="$stationModule.canbuildequipment.shieldcomponents">
                                 <add_research ware="ware.research_mod_shield_mk1"/>
                                 <add_research ware="ware.research_mod_shield_mk2"/>
                                 <add_research ware="ware.research_mod_shield_mk3"/>
@@ -94,7 +94,7 @@
                                       ware.mod_shield_rechargerate_01_mk3,]"/>
                             </do_elseif>
                             <!--Check for weapon factory-->
-                            <do_elseif value="$stationModule.products.{weaponcomponents}.exists">
+                            <do_elseif value="$stationModule.canbuildequipment.weaponcomponents">
                                 <add_research ware="ware.research_mod_weapon_mk1"/>
                                 <add_research ware="ware.research_mod_weapon_mk2"/>
                                 <add_research ware="ware.research_mod_weapon_mk3"/>
@@ -134,7 +134,7 @@
                                       ware.mod_weapon_surfaceelement_01_mk3,]"/>
                             </do_elseif>
                             <!--Check for hull factory-->
-                            <do_elseif value="$stationModule.products.{hullparts}.exists">
+                            <do_elseif value="$stationModule.canbuildequipment.hullparts">
                                 <add_research ware="ware.research_mod_ship_mk1"/>
                                 <add_research ware="ware.research_mod_ship_mk2"/>
                                 <add_research ware="ware.research_mod_ship_mk3"/>
