@@ -143,13 +143,13 @@
                                 </do_else>
                                 <!-- Station parts maintenance -->
                                 <do_if value="@$station.products.count">
-                                    <set_value name="$stationMaintenanceCosts" operation="add" min="(250 * $station.products.count)ct" max="(750 * $station.products.count)ct"/>
+                                    <set_value name="$stationMaintenanceCosts" operation="add" min="(1250 * $station.products.count)ct" max="(4500 * $station.products.count)ct"/>
                                 </do_if>
                                 <do_if value="@$station.workforce.amount">
                                     <set_value name="$stationMaintenanceCosts" operation="add" min="(100 * $station.workforce.amount)ct" max="(200 * $station.workforce.amount)ct"/>
                                 </do_if>
                                 <do_if value="@$station.cargo.count">
-                                    <set_value name="$stationMaintenanceCosts" operation="add" min="(150 * $station.cargo.count)ct" max="(350 * $station.cargo.count)ct"/>
+                                    <set_value name="$stationMaintenanceCosts" operation="add" min="(750 * $station.cargo.count)ct" max="(2350 * $station.cargo.count)ct"/>
                                 </do_if>
                                 <do_if value="@$station.isshipyard">
                                     <set_value name="$stationMaintenanceCosts" operation="add" min="500000ct" max="1500000ct"/>
