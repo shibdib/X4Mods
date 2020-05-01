@@ -54,6 +54,8 @@
                 <event_player_owned_attacked/>
                 <!-- Make sure it's a ship or station -->
                 <check_value value="event.object.isclass.station or event.object.isclass.ship"/>
+                <!-- Make sure it's not a drone -->
+                <check_value value="not event.object.isclass.ship or event.object.typename != 'Drone'"/>
                 <!-- Check damage (Ignore if in sector) -->
                 <check_value value="(event.object.isclass.station and $stationResponse == true and (event.object.hullpercentage + event.object.shieldpercentage) lt ($hpCutoffStation + ($hpCutoffStation * (event.object.maxshield != 0)))) or
                 (event.object.isclass.ship and $shipResponse == true and (event.object.hullpercentage + event.object.shieldpercentage) lt ($hpCutoffShip + ($hpCutoffShip * (event.object.maxshield != 0)))) or
