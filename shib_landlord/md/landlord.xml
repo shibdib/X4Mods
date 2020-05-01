@@ -137,35 +137,25 @@
                                     <set_value name="$taxes" operation="add" exact="$tax"/>
                                     <set_value name="$faction" exact="$station.sector.owner.knownname"/>
                                 </do_else>
-                                <!-- Station parts maintenance
-                                 Production modules cost between 500 and 1000
-                                 Hab modules between 1500 and 2000
-                                 Cargo modules between 200 and 400
-                                 Piers between 1000 and 1500
-                                 Shipyards between 2000 and 2500
-                                 Wharf between 1000 and 1500
-                                 -->
-                                <do_all exact="$stationComponents.count" counter="$c">
-                                    <set_value name="$stationModule" exact="$stationComponents.{$c}"/>
-                                    <do_if value="$stationModule.isproducing">
-                                        <set_value name="$stationMaintenanceCosts" operation="add" min="500ct" max="1000ct"/>
-                                    </do_if>
-                                    <do_elseif value="$stationModule.workforce.capacity">
-                                        <set_value name="$stationMaintenanceCosts" operation="add" min="1500ct" max="2000ct"/>
-                                    </do_elseif>
-                                    <do_elseif value="$stationModule.cargo">
-                                        <set_value name="$stationMaintenanceCosts" operation="add" min="200ct" max="400ct"/>
-                                    </do_elseif>
-                                    <do_elseif value="$stationModule.numpierdocks">
-                                        <set_value name="$stationMaintenanceCosts" operation="add" min="1000ct" max="1500ct"/>
-                                    </do_elseif>
-                                </do_all>
-                                <do_if value="$station.isshipyard">
-                                    <set_value name="$stationMaintenanceCosts" operation="add" min="2000ct" max="2500ct"/>
+                                <!-- Station parts maintenance -->
+                                <do_if value="@$station.products.count">
+                                    <set_value name="$stationMaintenanceCosts" operation="add" min="(250 * $station.products.count)ct" max="(750 * $station.products.count)ct"/>
                                 </do_if>
-                                <do_elseif value="$stationModule.iswharf">
-                                    <set_value name="$stationMaintenanceCosts" operation="add" min="1000ct" max="1500ct"/>
-                                </do_elseif>
+                                <do_if value="@$station.workforce.amount">
+                                    <set_value name="$stationMaintenanceCosts" operation="add" min="(100 * $station.workforce.amount)ct" max="(200 * $station.workforce.amount)ct"/>
+                                </do_if>
+                                <do_if value="@$station.cargo.count">
+                                    <set_value name="$stationMaintenanceCosts" operation="add" min="(150 * $station.cargo.count)ct" max="(350 * $station.cargo.count)ct"/>
+                                </do_if>
+                                <do_if value="@$station.isshipyard">
+                                    <set_value name="$stationMaintenanceCosts" operation="add" min="500000ct" max="1500000ct"/>
+                                </do_if>
+                                <do_if value="@$station.isdefencestation">
+                                    <set_value name="$stationMaintenanceCosts" operation="add" min="5000ct" max="25000ct"/>
+                                </do_if>
+                                <do_if value="@$station.iswharf">
+                                    <set_value name="$stationMaintenanceCosts" operation="add" min="100000ct" max="1000000ct"/>
+                                </do_if>
                                 <!-- Add station info to list for detailed log entry-->
                                 <append_to_list name="$stationList" exact="[$station.knownname, $station.sector.knownname, $tax, $faction, $stationMaintenanceCosts]"/>
                                 <set_value name="$maintenanceCosts" operation="add" exact="($stationMaintenanceCosts)ct"/>
