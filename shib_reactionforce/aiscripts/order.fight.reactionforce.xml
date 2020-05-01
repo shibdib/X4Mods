@@ -51,17 +51,19 @@
         <!-- If player owned object is attacked, check if it is in range of the reaction force -->
         <handler>
             <conditions>
-                <event_player_owned_attacked/>
-                <!-- Make sure it's a ship or station -->
-                <check_value value="event.object.isclass.station or event.object.isclass.ship"/>
-                <!-- Make sure it's not a drone -->
-                <check_value value="not event.object.isclass.ship or event.object.typename != 'Drone'"/>
-                <!-- Check damage (Ignore if in sector) -->
-                <check_value value="(event.object.isclass.station and $stationResponse == true and (event.object.hullpercentage + event.object.shieldpercentage) lt ($hpCutoffStation + ($hpCutoffStation * (event.object.maxshield != 0)))) or
+                <check_all>
+                    <event_player_owned_attacked/>
+                    <!-- Make sure it's a ship or station -->
+                    <check_value value="event.object.isclass.station or event.object.isclass.ship"/>
+                    <!-- Make sure it's not a drone -->
+                    <check_value value="not event.object.isclass.ship or event.object.typename != 'Drone'"/>
+                    <!-- Check damage (Ignore if in sector) -->
+                    <check_value value="(event.object.isclass.station and $stationResponse == true and (event.object.hullpercentage + event.object.shieldpercentage) lt ($hpCutoffStation + ($hpCutoffStation * (event.object.maxshield != 0)))) or
                 (event.object.isclass.ship and $shipResponse == true and (event.object.hullpercentage + event.object.shieldpercentage) lt ($hpCutoffShip + ($hpCutoffShip * (event.object.maxshield != 0)))) or
                 event.object.sector == this.sector"/>
-                <!-- Check if player -->
-                <check_value value="event.object != player.controlled or $playerResponse"/>
+                    <!-- Check if player -->
+                    <check_value value="event.object != player.controlled or $playerResponse"/>
+                </check_all>
             </conditions>
             <actions>
                 <do_if value="$responseTarget == null and event.object != this.ship">
@@ -80,6 +82,27 @@
                         <set_value name="$idling" exact="null"/>
                         <abort_called_scripts resume="start"/>
                     </do_if>
+                </do_if>
+            </actions>
+        </handler>
+        <!-- If distress drone is launched in system and it's from a friend -->
+        <handler>
+            <conditions>
+                <check_all>
+                    <event_distressdrone_launched/>
+                    <!-- Check if in system -->
+                    <check_value value="event.param2.sector == this.ship.sector"/>
+                    <!-- Check if friend -->
+                    <check_value value="event.param2.owner.relationto.{faction.player} gt 0f"/>
+                </check_all>
+            </conditions>
+            <actions>
+                <do_if value="$responseTarget == null and event.param2 != this.ship">
+                    <debug_text text="'SHIB Reaction Force - Distress drone in system, responding to - %s - For response force - %s'.[event.param2.knownname, this.ship.knownname]"/>
+                    <set_value name="$responseTarget" exact="event.object"/>
+                    <set_value name="$responding" exact="null"/>
+                    <set_value name="$idling" exact="null"/>
+                    <abort_called_scripts resume="start"/>
                 </do_if>
             </actions>
         </handler>
