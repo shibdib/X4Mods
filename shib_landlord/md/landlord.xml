@@ -47,17 +47,21 @@
                                         <set_value name="$taxMulti" exact="0.04f"/>
                                         <set_value name="$relations" exact="$station.owner.relationto.{faction.player}"/>
                                         <do_if value="$relations lt 0f">
-                                            <set_value name="$taxMulti" exact="0.08f"/>
+                                            <set_value name="$taxMulti" exact="0.0125f"/>
                                         </do_if>
                                         <do_elseif value="$relations ge 0f and $relations lt 0.01f">
-                                            <set_value name="$taxMulti" exact="0.04f"/>
-                                        </do_elseif>
-                                        <do_elseif value="$relations ge 0.01f and $relations lt 0.1f">
                                             <set_value name="$taxMulti" exact="0.02f"/>
                                         </do_elseif>
-                                        <do_elseif value="$relations ge 0.1f">
-                                            <set_value name="$taxMulti" exact="0.0125f"/>
+                                        <do_elseif value="$relations ge 0.01f and $relations lt 0.1f">
+                                            <set_value name="$taxMulti" exact="0.04f"/>
                                         </do_elseif>
+                                        <do_elseif value="$relations ge 0.1f">
+                                            <set_value name="$taxMulti" exact="0.08f"/>
+                                        </do_elseif>
+                                        <!-- Tax bonus if station is shipyard or wharf-->
+                                        <do_if value="@$station.isshipyard or @$station.iswharf">
+                                            <set_value name="$taxMulti" operation="add" exact="0.025f"/>
+                                        </do_if>
                                         <set_value name="$plotCost" exact="($station.buildplot.price / 100)f"/>
                                         <do_if value="not $plotCost">
                                             <set_value name="$plotCost" min="35000" max="200000"/>
