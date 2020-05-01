@@ -9,6 +9,7 @@
                 <check_any>
                     <event_cue_signalled cue="md.Setup.GameStart"/>
                     <event_player_created/>
+                    <event_game_loaded/>
                     <event_player_built_station/>
                     <event_player_build_finished/>
                 </check_any>
