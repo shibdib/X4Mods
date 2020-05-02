@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="ws_2061417324" name="Disable Story" author="Shibdib" version="12" date="2020-05-01" save="0" description="Removes the PHQ story and unlocks all research." enabled="1" lastupdate="1588372805">
-  <text language="44" name="Disable Story" author="Shibdib" description="Removes the PHQ story and unlocks all research."/>
+<content id="ShibDisableStoryStation" name="Disable Story(Station)" author="Shibdib" version="12" date="2020-05-01" save="0" description="Removes the PHQ story and unlocks all research." enabled="1" lastupdate="1588372805">
+  <text language="44" name="Disable Story(Station)" author="Shibdib" description="Removes the PHQ story and unlocks all research."/>
 </content>
