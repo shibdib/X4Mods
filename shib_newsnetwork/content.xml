@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<content id="ShibNewsNetwork" name="News Network" author="Shibdib" version="1" date="2020-04-15" save="0" description="Adds periodic news reports." enabled="1">
- <text language="44" name="News Network" author="Shibdib" description="Adds periodic news reports." />
-</content>
