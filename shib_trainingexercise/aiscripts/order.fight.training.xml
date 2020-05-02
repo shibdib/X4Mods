@@ -1,0 +1,58 @@
+<aiscript name="trainingexercise" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://x4libonline.ddns.net/libraries/aiscripts.xsd" version="1">
+    <!-- Setup context menu order-->
+    <order id="TrainingExercise" name="Training Exercise" description="Train with your subordinates to gain experience." category="combat" infinite="true">
+        <params>
+            <!-- Where the training will occur -->
+            <param name="home" default="this.sector" type="object" text="Training Sector" comment="Training Sector">
+                <input_param name="class" value="[class.sector]"/>
+            </param>
+        </params>
+        <requires>
+            <match shiptype="shiptype.lasertower" negate="true"/>
+        </requires>
+    </order>
+    <interrupts>
+        <handler ref="SectorChangeHandler"/>
+        <handler ref="ScannedHandler"/>
+        <handler ref="InspectedHandler"/>
+        <handler ref="TargetInvalidHandler"/>
+        <handler ref="ResupplyHandler"/>
+    </interrupts>
+    <!--INIT-->
+    <init>
+        <debug_text text="'SHIB Training Exercise - %s - INIT'.[this.ship.knownname]"/>
+        <set_value name="$started" exact="player.age"/>
+        <set_value name="$lastGainCheck" exact="player.age"/>
+        <set_order_syncpoint_reached order="this.ship.order"/>
+    </init>
+    <attention min="unknown">
+        <actions>
+            <label name="start"/>
+            <set_command command="command.patrol"/>
+            <!-- Random patrol length where ships ignore hostiles unless attacked -->
+            <set_value name="$timeout" min="180s" max="600s"/>
+            <run_script name="'order.fight.patrol'">
+                <param name="space" value="$home"/>
+                <param name="allowothertargets" value="false"/>
+                <param name="pursuedistance" value="1m"/>
+                <param name="timeout" value="$timeout"/>
+            </run_script>
+            <!-- After patrol % chance of XP gain based on combinedskill -->
+            <do_if value="($lastGainCheck + 180s) lt player.age">
+                <debug_text text="'SHIB Training Exercise - %s - XP Check'.[this.ship.knownname]"/>
+                <set_value name="$lastGainCheck" exact="player.age"/>
+                <!-- Select random experience event to keep gain random -->
+                <set_value name="$expEvent" list="['ship_disable_easy', 'ship_kill_hard', 'ship_flee', 'ship_trade_normal', 'ship_opened_lockbox']"/>
+                <apply_experience entity="this" experience="$expEvent" chance="(105 - this.combinedskill)"/>
+                <!-- Subordinates also might gain XP -->
+                <do_if value="this.ship.allsubordinates.count">
+                    <do_all exact="this.ship.allsubordinates.count" counter="$c">
+                        <set_value name="$subordinate" exact="this.ship.allsubordinates.{$c}"/>
+                        <apply_experience entity="$subordinate" experience="$expEvent" chance="(105 - $subordinate.combinedskill)"/>
+                    </do_all>
+                </do_if>
+            </do_if>
+            <resume label="start"/>
+        </actions>
+    </attention>
+</aiscript>
