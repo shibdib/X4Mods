@@ -89,7 +89,7 @@
         <handler>
             <conditions>
                 <check_all>
-                    <event_distressdrone_launched/>
+                    <event_distressdrone_launched space="this.sector"/>
                     <!-- Check if in system -->
                     <check_value value="event.param2.sector == this.ship.sector"/>
                     <!-- Check if friend -->
