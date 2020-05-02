@@ -48,7 +48,7 @@
                 <do_if value="this.ship.allsubordinates.count">
                     <do_all exact="this.ship.allsubordinates.count" counter="$c">
                         <set_value name="$subordinate" exact="this.ship.allsubordinates.{$c}"/>
-                        <apply_experience entity="$subordinate" experience="$expEvent" chance="(105 - $subordinate.combinedskill)"/>
+                        <apply_experience entity="$subordinate.assignedpilot" experience="$expEvent" chance="(105 - $subordinate.assignedpilot.combinedskill)"/>
                     </do_all>
                 </do_if>
             </do_if>
