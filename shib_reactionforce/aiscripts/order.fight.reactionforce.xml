@@ -181,8 +181,12 @@
                 <set_value name="$responseTime" exact="null"/>
                 <set_value name="$responding" exact="null"/>
                 <set_value name="$idling" exact="true"/>
-                <!-- If home is a station -->
+                <!-- If home is a station/dockable -->
                 <do_if value="not $home.isclass.space and ((this.ship.isclass.[class.ship_s, class.ship_xs] and $home.isclass.[class.station, class.ship_m, class.ship_l, class.ship_xl]) or (this.ship.isclass.[class.ship_m] and $home.isclass.[class.station, class.ship_l, class.ship_xl]))">
+                    <!-- Set home to commander if we own the item -->
+                    <do_if value="$home.owner == this.ship.owner">
+                        <set_object_commander object="this.ship" commander="$home" assignment="assignment.defence"/>
+                    </do_if>
                     <!-- If you should dock do so -->
                     <do_if value="$dockWhenIdle == true">
                         <do_if value="this.ship.assigneddock == null or this.ship.assigneddock.knownname != $home.knownname">
