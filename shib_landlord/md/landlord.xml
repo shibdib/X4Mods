@@ -38,7 +38,7 @@
                                 <set_value name="$sector" exact="$playerSectors.{$c}"/>
                                 <find_object name="$stations" recursive="true" class="class.station" multiple="true" space="$sector" known="true">
                                     <!--No taxes from your own stations or xenon-->
-                                    <match owner="[faction.player, faction.xenon]" negate="true"/>
+                                    <match owner="[faction.player, faction.xenon, faction.khaak]" negate="true"/>
                                 </find_object>
                                 <do_if value="$stations.count">
                                     <set_value name="$totalStations" operation="add" exact="$stations.count"/>
