@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="ShibLandlord" name="Landlord" author="Shibdib" version="18" date="2020-04-30" save="0" description="Adds maintenance charges and taxes to stations." enabled="1" lastupdate="1588304908">
+<content id="ShibLandlord" name="Landlord" author="Shibdib" version="1.8.1" date="2020-04-30" save="0" description="Adds maintenance charges and taxes to stations." enabled="1" lastupdate="1588304908">
   <text language="44" name="Landlord" author="Shibdib" description="Adds maintenance charges and taxes to stations."/>
 </content>
