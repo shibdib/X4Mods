@@ -7,11 +7,11 @@
 		<t id="30103">Home Sector/Station</t>
 		<t id="30104">Dock When Idle</t>
 		<t id="30105">When idle should we dock. If false or home is not a station we will patrol our home system.</t>
-		<t id="30106">Response Range (Jumps)</t>
+		<t id="30106">Response Range(Jumps)</t>
 		<t id="30107">Max range this force will respond from home.</t>
 		<t id="30108">Respond To Ships</t>
 		<t id="30109">Should we respond to ships that are under attack? \(Always Responds In Sector\)</t>
-		<t id="30110">HP% Response Point (Ships)</t>
+		<t id="30110">HP% Response Point(Ships)</t>
 		<t id="30111">The HP \(Hull + Shield\) Percentage to trigger a response.</t>
 		<t id="30112">Respond To Stations</t>
 		<t id="30113">Should we respond to stations that are under attack? \(Always Responds In Sector\)</t>
