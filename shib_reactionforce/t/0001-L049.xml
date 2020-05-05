@@ -6,8 +6,8 @@
 		<t id="30102">Heimat</t>
 		<t id="30103">Heimatsektor/Station</t>
 		<t id="30104">Andocken wenn untätig</t>
-		<t id="30105">Bei Untätigkeit andocken? Bei \"false\" oder wenn Heimat keine Station ist, wird Heimatsektor patrouilliert.</t>
-		<t id="30106">Reaktionsreichweite (Sprünge)</t>
+		<t id="30105">Bei Untätigkeit andocken? Wenn nicht ausgewählt oder Heimat keine Station ist, wird Heimatsektor patrouilliert.</t>
+		<t id="30106">Reaktionsreichweite(Sprünge)</t>
 		<t id="30107">Maximale Reichweite, bis zu der die Streitkräfte eingreifen.</t>
 		<t id="30108">Reaktion bei Schiffen</t>
 		<t id="30109">Soll bei Angriffen auf Schiffe reagiert werden? \(Reagiert immer auf Angriffe im Heimatsektor\)</t>
