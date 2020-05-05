@@ -100,7 +100,7 @@
                         <!-- In sector check-->
                         <check_value value="event.object.sector.knownname == this.sector.knownname"/>
                         <!-- Distance check-->
-                        <check_value value="$responseRange ge event.object.sector.gatedistance.{if $home.isclass.space then event.object.sector else $home.sector}"/>
+                        <check_value value="$responseRange ge event.object.sector.gatedistance.{if $home.isclass.sector then $home else $home.sector}"/>
                     </check_any>
                     <!-- Check damage -->
                     <check_any>
@@ -177,13 +177,13 @@
                         <!-- Has response target -->
                         <check_value value="$responseTarget"/>
                         <!-- Distance check-->
-                        <check_value value="$responseRange lt $responseTarget.sector.gatedistance.{if $home.isclass.space then event.object.sector else $home.sector}"/>
+                        <check_value value="$responseRange lt $responseTarget.sector.gatedistance.{if $home.isclass.sector then $home else $home.sector}"/>
                     </check_all>
                     <check_all>
                         <!-- Has aggressor target -->
                         <check_value value="$aggressor"/>
                         <!-- Distance check-->
-                        <check_value value="$responseRange lt $aggressor.sector.gatedistance.{if $home.isclass.space then event.object.sector else $home.sector}"/>
+                        <check_value value="$responseRange lt $aggressor.sector.gatedistance.{if $home.isclass.sector then $home else $home.sector}"/>
                     </check_all>
                 </check_any>
             </conditions>
