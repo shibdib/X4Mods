@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<language>
+    <page id="202505"  title="Reaction force" descr="Names and descriptions of settings" voice="no">
+		<t id="20100">Reaction Force</t>	
+		<t id="20101">Reacts to enemies attacking your assets nearby.</t>
+		<t id="20102">Home</t>
+		<t id="20103">Home Sector/Station</t>
+		<t id="20104">Dock When Idle</t>
+		<t id="20105">When idle should we dock. If false or home is not a station we will patrol our home system.</t>
+		<t id="20106">Response Range \(Jumps\)</t>
+		<t id="20107">Max range this force will respond from home.</t>
+		<t id="20108">Respond To Ships</t>
+		<t id="20109">Should we respond to ships that are under attack? \(Always Responds In Sector\)</t>
+		<t id="20110">HP% Response Point \(Ships\)</t>
+		<t id="20111">The HP \(Hull + Shield\) Percentage to trigger a response.</t>
+		<t id="20112">Respond To Stations</t>
+		<t id="20113">Should we respond to stations that are under attack? \(Always Responds In Sector\)</t>
+		<t id="20114">HP% Response Point (Stations)</t>
+		<t id="20115">The HP \(Hull + Shield\) Percentage to trigger a response.</t>
+		<t id="20116">Respond To Player</t>
+		<t id="20117">Should we respond to the player?</t>
+		<t id="20118">Respond To Distress</t>
+		<t id="20119">Should we respond to the distress Distress?</t>
+		<t id="20120">Aktiviere Benachrichtigungen</t>
+		<t id="20121">Wenn aktiviert , wird der Spieler bei Entsendung der Reaktionsstreitkräfte informiert.</t>	
+		<t id="20122">Is this a subordinate?</t>
+		<t id="20123">Is it responding?</t>
+		<t id="20124">REACTION FORCE:\n%s has been dispatched to %s</t>
+		<t id="20125">REACTION FORCE DISPATCHED:</t>
+	</page>
+</language>
