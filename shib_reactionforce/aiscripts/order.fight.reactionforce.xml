@@ -1,44 +1,44 @@
 <aiscript name="reactionforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://x4libonline.ddns.net/libraries/aiscripts.xsd" version="1">
     <!-- Setup context menu order-->
-    <order id="ReactionForce" name="{20200505,30100}" description="{20200505,30101}" category="combat" infinite="true">
+    <order id="ReactionForce" name="{7442342,30100}" description="{7442342,30101}" category="combat" infinite="true">
         <params>
             <!-- Where the reaction force will base itself -->
-            <param name="home" default="this.sector" type="object" text="{20200505,30102}" comment="{20200505,301003}">
+            <param name="home" default="this.sector" type="object" text="{7442342,30102}" comment="{7442342,301003}">
                 <input_param name="class" value="if this.ship.isclass.[class.ship_s, class.ship_xs] then [class.sector, class.station, class.ship_m, class.ship_l, class.ship_xl] else [class.sector, class.station, class.ship_l, class.ship_xl]"/>
             </param>
             <!-- Should we dock when idle? -->
-            <param name="dockWhenIdle" type="bool" default="false" text="{20200505,30104}" comment="{20200505,30105}"/>
+            <param name="dockWhenIdle" type="bool" default="false" text="{7442342,30104}" comment="{7442342,30105}"/>
             <!-- Max range this force will respond -->
-            <param name="responseRange" default="1" type="number" text="{20200505,30106}" comment="{20200505,30107}">
+            <param name="responseRange" default="1" type="number" text="{7442342,30106}" comment="{7442342,30107}">
                 <input_param name="startvalue" value="0"/>
                 <input_param name="min" value="0"/>
                 <input_param name="max" value="[this.ship.pilot.skill.piloting / 2, 3].max"/>
                 <input_param name="step" value="1"/>
             </param>
             <!-- Respond to ships? -->
-            <param name="shipResponse" type="bool" default="true" text="{20200505,30108}" comment="{20200505,30109}"/>
+            <param name="shipResponse" type="bool" default="true" text="{7442342,30108}" comment="{7442342,30109}"/>
             <!-- What percent of remaining hp/shields should get a response -->
-            <param name="hpCutoffShip" default="100" type="number" text="{20200505,30110}" comment="{20200505,30111}">
+            <param name="hpCutoffShip" default="100" type="number" text="{7442342,30110}" comment="{7442342,30111}">
                 <input_param name="startvalue" value="100"/>
                 <input_param name="min" value="1"/>
                 <input_param name="max" value="100"/>
                 <input_param name="step" value="5"/>
             </param>
             <!-- Respond to stations? -->
-            <param name="stationResponse" type="bool" default="true" text="{20200505,30112}" comment="{20200505,30113}"/>
+            <param name="stationResponse" type="bool" default="true" text="{7442342,30112}" comment="{7442342,30113}"/>
             <!-- What percent of remaining hp/shields should get a response -->
-            <param name="hpCutoffStation" default="100" type="number" text="{20200505,30114}" comment="{20200505,30115}">
+            <param name="hpCutoffStation" default="100" type="number" text="{7442342,30114}" comment="{7442342,30115}">
                 <input_param name="startvalue" value="100"/>
                 <input_param name="min" value="1"/>
                 <input_param name="max" value="100"/>
                 <input_param name="step" value="5"/>
             </param>
             <!-- Respond to player? -->
-            <param name="playerResponse" type="bool" default="true" text="{20200505,30116}" comment="{20200505,30117}"/>
+            <param name="playerResponse" type="bool" default="true" text="{7442342,30116}" comment="{7442342,30117}"/>
             <!-- Respond to beacons? -->
-            <param name="distressResponse" type="bool" default="false" text="{20200505,30118}" comment="{20200505,30119}"/>
+            <param name="distressResponse" type="bool" default="false" text="{7442342,30118}" comment="{7442342,30119}"/>
             <!-- Would you like to receive a notification when this ship is dispatched? -->
-            <param name="notifyMe" type="bool" default="false" text="{20200505,30120}" comment="{20200505,30121}"/>
+            <param name="notifyMe" type="bool" default="false" text="{7442342,30120}" comment="{7442342,30121}"/>
             <!-- Subordinate? -->
             <param name="reactionSubordinate" type="internal" default="null" comment="Is this a subordinate?"/>
             <!-- responding? -->
@@ -265,9 +265,9 @@
                         <set_value name="$activeResponse" exact="true"/>
                         <!-- Handle notifications/Log -->
                         <do_if value="$notifyMe">
-                            <show_notification text="'{20200505,30122}'.[this.ship.knownname, $responseTarget.knownname]" priority="9"/>
+                            <show_notification text="'{7442342,30122}'.[this.ship.knownname, $responseTarget.knownname]" priority="9"/>
                         </do_if>
-                        <write_to_logbook category="alerts" title="'{20200505,30123}:'" text="'{20200505,30124}'.[this.ship.knownname, $responseTarget.knownname, $responseTarget.sector.knownname]"/>
+                        <write_to_logbook category="alerts" title="'{7442342,30123}:'" text="'{7442342,30124}'.[this.ship.knownname, $responseTarget.knownname, $responseTarget.sector.knownname]"/>
                         <set_value name="$responding" exact="true"/>
                         <set_value name="$responseTime" exact="player.age"/>
                         <set_value name="$idling" exact="null"/>
