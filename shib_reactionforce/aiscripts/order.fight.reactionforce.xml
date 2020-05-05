@@ -62,7 +62,7 @@
                     <!-- Subordinates ignore -->
                     <check_value value="@$reactionSubordinate == null"/>
                     <!-- Version check -->
-                    <check_value value="global.$reactionForceVersion != 200"/>
+                    <check_value value="global.$reactionForceVersion != 201"/>
                 </check_all>
             </conditions>
             <actions>
@@ -166,6 +166,38 @@
                 </do_if>
             </actions>
         </handler>
+        <!-- If your escort target is too far away cancel -->
+        <handler>
+            <conditions>
+                <event_object_changed_sector object="this.ship"/>
+                <!-- Subordinates ignore -->
+                <check_value value="@$reactionSubordinate == null"/>
+                <check_any>
+                    <check_all>
+                        <!-- Has response target -->
+                        <check_value value="$responseTarget"/>
+                        <!-- Distance check-->
+                        <check_value value="$responseRange lt $responseTarget.sector.gatedistance.{if $home.isclass.space then event.object.sector else $home.sector}"/>
+                    </check_all>
+                    <check_all>
+                        <!-- Has aggressor target -->
+                        <check_value value="$aggressor"/>
+                        <!-- Distance check-->
+                        <check_value value="$responseRange lt $aggressor.sector.gatedistance.{if $home.isclass.space then event.object.sector else $home.sector}"/>
+                    </check_all>
+                </check_any>
+            </conditions>
+            <actions>
+                <cancel_all_orders object="this.ship"/>
+                <set_value name="$responseTime" exact="null"/>
+                <set_value name="$responding" exact="null"/>
+                <set_value name="$responseTarget" exact="null"/>
+                <set_value name="$idling" exact="null"/>
+                <set_value name="$activeResponse" exact="null"/>
+                <set_value name="$aggressor" exact="null"/>
+                <resume label="start"/>
+            </actions>
+        </handler>
     </interrupts>
     <!--INIT-->
     <init>
@@ -259,6 +291,7 @@
                         <do_if value="@$aggressor">
                             <create_order object="this.ship" id="'Attack'" immediate="true">
                                 <param name="primarytarget" value="$aggressor"/>
+                                <param name="pursuetargets" value="false"/>
                                 <param name="escort" value="$responseTarget"/>
                                 <param name="allowothertargets" value="true"/>
                             </create_order>
