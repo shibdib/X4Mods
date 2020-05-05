@@ -4,12 +4,12 @@ CHANGES
 - Builders will get 300k when completing a build successfully
 -->
 <diff>
-    <add sel="/aiscript/attention/actions/do_while/do_else/do_else/wait/interrupt/actions/do_if" pos="prepend">
-        <do_if value="this.ship.owner == faction.player and $station.owner != faction.player">
-            <debug_text text="'SHIB Builder Payment - %s - %s - %s'.[this.ship.knownname, $station.knownname, $station.sector.knownname]"/>
+    <add sel="/aiscript/attention/actions/label[@name='timeout']" pos="disengage">
+        <do_if value="this.ship.owner == faction.player and @$station.owner != faction.player">
+            <debug_text text="'SHIB Builder Payment - %s - %s - %s'.[this.ship.knownname, @$station.knownname, @$station.sector.knownname]"/>
             <set_value name="$textHeader" exact="'Builder Payment: \n'"/>
             <set_value name="$textBasic" exact="'%s credits collected by %s.'.['300,000', this.ship.knownname]"/>
-            <set_value name="$textDetailed" exact="'%s credits collected by %s for completing construction at %s in %s.'.['300,000', this.ship.knownname, $station.knownname, $station.sector.knownname]"/>
+            <set_value name="$textDetailed" exact="'%s credits collected by %s for completing construction at %s in %s.'.['300,000', this.ship.knownname, @$station.knownname, @$station.sector.knownname]"/>
             <show_notification text="$textHeader + $textBasic" timeout="10s"/>
             <write_to_logbook title="$textHeader" category="upkeep" text="$textDetailed"
                               money="(300000)Cr"/>
