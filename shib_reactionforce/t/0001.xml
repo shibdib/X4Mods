@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <language>
-    <page id="20200505"  title="Reaction force" descr="Names and descriptions of settings" voice="no">
+    <page id="7442342"  title="Reaction force" descr="Names and descriptions of settings" voice="no">
 		<t id="30100">Reaction Force</t>	
 		<t id="30101">Reacts to enemies attacking your assets nearby.</t>
 		<t id="30102">Home</t>
