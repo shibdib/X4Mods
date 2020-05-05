@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <language>
-    <page id="202505"  title="Reaction force" descr="Names and descriptions of settings" voice="no">
-		<t id="20100">Reaktionsstreitkräfte</t>	
-		<t id="20101">Reagiert bei Angriffen auf Spielereigentum.</t>
-		<t id="20102">Heimat</t>
-		<t id="20103">Heimatsektor/Station</t>
-		<t id="20104">Andocken wenn untätig</t>
-		<t id="20105">Sollen wir bei Untätigkeit andocken?. Bei \"false\" oder wenn Heimat keine Station ist, wird Heimatsektor patrouilliert.</t>
-		<t id="20106">Reaktionsreichweite \(Sprungtore\)</t>
-		<t id="20107">Maximale Reichweite, in der die Streitkräfte eingreifen.</t>
-		<t id="20108">Reaktion auf Schiffsangriffe</t>
-		<t id="20109">Sollen wir bei Angriffen auf Schiffe reagieren? \(Reagiert immer auf Angriffe im Heimatsektor\)</t>
-		<t id="20110">Reagiert ab HP% bei Schiffen</t>
-		<t id="20111">Die Prozente der Strukturpunkte \(Hülle + Schilde\) ab welcher bei Angriffen auf Schiffe reagiert wird.</t>
-		<t id="20112">Reaktion auf Stationsangriffe</t>
-		<t id="20113">Sollen wir bei Angriffen auf Stationen reagieren? \(Reagiert immer auf Angriffe im Heimatsektor\)</t>
-		<t id="20114">Reagiert ab HP% bei Stationen</t>
-		<t id="20115">Die Prozente der Strukturpunkte \(Hülle + Schilde\) ab welcher bei Angriffen auf Stationen reagiert wird.</t>
-		<t id="20116">Reaktion auf Spieler</t>
-		<t id="20117">Sollen wir bei Angriffen auf das Spielerschiff reagieren?</t>
-		<t id="20118">Reaktion auf Notsignal</t>
-		<t id="20119">Sollen wir auf Notsignale reagieren?</t>
-		<t id="20120">Benachrichtigungen aktivieren</t>
-		<t id="20121">Wenn aktiviert , wird der Spieler bei Entsendung der Reaktionsstreitkräfte informiert.</t>	
-		<t id="20122">Ist das Schiff untergeordnet</t>
-		<t id="20123">Untergeordnetes Schiff reagiert auch</t>
-		<t id="20124">REAKTIONSSTREITKRÄFTE:\n%s wurden zu %s entsandt</t>
-		<t id="20125">REAKTIONSSTREITKRÄFTE ENTSANDT:</t>
+    <page id="20200505"  title="Reaction force" descr="Names and descriptions of settings" voice="no">
+		<t id="30100">Reaktionsstreitkräfte</t>	
+		<t id="30101">Reagiert bei Angriffen auf Spielereigentum.</t>
+		<t id="30102">Heimat</t>
+		<t id="30103">Heimatsektor/Station</t>
+		<t id="30104">Andocken wenn untätig</t>
+		<t id="30105">Bei Untätigkeit andocken? Bei \"false\" oder wenn Heimat keine Station ist, wird Heimatsektor patrouilliert.</t>
+		<t id="30106">Reaktionsreichweite (Sprünge)</t>
+		<t id="30107">Maximale Reichweite, bis zu der die Streitkräfte eingreifen.</t>
+		<t id="30108">Reaktion bei Schiffen</t>
+		<t id="30109">Soll bei Angriffen auf Schiffe reagiert werden? \(Reagiert immer auf Angriffe im Heimatsektor\)</t>
+		<t id="30110">Bei Schiffen ab HP%</t>
+		<t id="30111">Die Prozente der Strukturpunkte \(Hülle + Schilde\), ab welcher bei Angriffen auf Schiffe reagiert wird.</t>
+		<t id="30112">Reaktion bei Stationen</t>
+		<t id="30113">Soll bei Angriffen auf Stationen reagiert werden? \(Reagiert immer auf Angriffe im Heimatsektor\)</t>
+		<t id="30114">Bei Stationen ab HP%</t>
+		<t id="30115">Die Prozente der Strukturpunkte \(Hülle + Schilde\), ab welcher bei Angriffen auf Stationen reagiert wird.</t>
+		<t id="30116">Reaktion auf Spieler</t>
+		<t id="30117">Soll bei Angriffen auf das Spielerschiff reagiert werden?</t>
+		<t id="30118">Reaktion auf Notsignal</t>
+		<t id="30119">Sollen wir auf Notsignale reagieren?</t>
+		<t id="30120">Benachrichtigungen</t>
+		<t id="30121">Wenn aktiviert , wird der Spieler bei Entsendung der Reaktionsstreitkräfte informiert.</t>	
+		<t id="30122">REAKTIONSSTREITKRÄFTE:\n%s wurden zu %s entsandt</t>
+		<t id="30123">REAKTIONSSTREITKRÄFTE ENTSANDT:</t>
+		<t id="30124">REAKTIONSSTREITKRÄFTE:\n%s wurden zu %s nach %s entsandt</t>
 	</page>
 </language>
