@@ -98,14 +98,14 @@
                     <!-- Range check (Always respond if range 0) -->
                     <check_any>
                         <!-- In sector check-->
-                        <check_value value="event.object.sector.knownname == this.sector.knownname"/>
+                        <check_value value="event.object.sector.knownname == if $home.isclass.sector then $home else $home.sector"/>
                         <!-- Distance check-->
                         <check_value value="$responseRange ge event.object.sector.gatedistance.{if $home.isclass.sector then $home else $home.sector}"/>
                     </check_any>
                     <!-- Check damage -->
                     <check_any>
                         <!-- In sector check-->
-                        <check_value value="event.object.sector.knownname == this.sector.knownname"/>
+                        <check_value value="event.object.sector.knownname == if $home.isclass.sector then $home else $home.sector"/>
                         <!-- Station check-->
                         <check_value value="event.object.isclass.station and $stationResponse == true and (event.object.hullpercentage + event.object.shieldpercentage) lt ($hpCutoffStation + ($hpCutoffStation * (event.object.maxshield != 0)))"/>
                         <!-- Ship check-->
