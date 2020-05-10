@@ -2,15 +2,22 @@
 <language>
     <page id="7442342"  title="Landlord" descr="Names and descriptions" voice="no">
         <t id="31000">Landlord Installed.</t>
-		<t id="31001">Tax Collection \n</t>
-        <t id="31002">%s credits collected from %s stations.</t>
-		<t id="31003">Detailed Overview:\nTaxes Received: %s Credits\n\nStation Details:</t>	
-		<t id="31004">\n%s (%s) - Tax: %s Credits</t>
-		<t id="31005">Unable to afford station costs.\nTotal cost for %s Stations, %s Credits.</t>
-		<t id="31006">Total cost for %s Stations, %s Credits.</t>
-		<t id="31007">Detailed Overview:\nTaxes Paid: %s Credits\nMaintenance Costs paid: %s Credits\nTotal: %s Credits\n\nStation Details:</t>
-		<t id="31008">\n%s (%s) - Tax: %s Credits | Maintenance: %s Credits</t>
-		<t id="31009">Relations with %s have changed from %s to %s.</t>
-    	<t id="31010">Relationship Change:</t>
+        <t id="31001">Tax Collection \n</t>
+        <t id="31002">credits collected from (amount stations)</t>
+        <t id="31003">stations</t>
+        <t id="31004">Detailed Overview:\nTaxes Received:</t>
+        <t id="31005">Station Details:</t>
+        <t id="31006">Tax:</t>
+        <t id="31007">Station Maintenance:</t>
+        <t id="31008">Unable to afford station costs.\nTotal cost for (amount stations)</t>
+        <t id="31009">Total cost for (amount stations)</t>
+        <t id="31010">Detailed Overview:\nTaxes Paid:</t>
+        <t id="31011">Maintenance Costs:</t>
+        <t id="31012">Total:</t>
+        <t id="31013">| Maintenance:</t>
+        <t id="31014">Relations with (faction)</t>
+        <t id="31015">(Relations with faction) have changed from </t>
+        <t id="31016">(Relations with faction have changed from number) to (new number)</t>
+        <t id="31017">Relationship Change:</t>
 	</page>
 </language>

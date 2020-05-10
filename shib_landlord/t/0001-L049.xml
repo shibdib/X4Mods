@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <language>
-    <page id="7442342"  title="Landlord" descr="Names and descriptions" voice="no">
+    <page id="7442342" title="Landlord" descr="Names and descriptions" voice="no">
         <t id="31000">Landlord installiert.</t>
-		<t id="31001">Steuererhebung: \n</t>
-        <t id="31002">%s Credits wurden von %s Stationen eingefordert.</t>
-		<t id="31003">Detailierte Übersicht:\nErhobene Steuern: %s Credits\n\nStationsdetails:</t>	
-		<t id="31004">\n%s (%s) - Steuer: %s Credits</t>
-		<t id="31005">Nicht genügend Credits zum Begleichen der Stationskosten vorhanden.\nGesamtkosten für %s Stationen: %s Credits.</t>
-		<t id="31006">Gesamtkosten für %s Stationen: %s Credits.</t>
-		<t id="31007">Detailierte Übersicht:\nBezahlte Steuern: %s Credits\nBezahlte Unterhaltskosten: %s Credits\nGesamt: %s Credits\n\nStationsdetails:</t>
-		<t id="31008">\n%s (%s) - Steuer: %s Credits | Unterhalt: %s Credits</t>
-		<t id="31009">Die Beziehungen zu %s haben sich von %s auf %s geändert.</t>
-    	<t id="31010">Beziehungsveränderung:</t>
+        <t id="31001">Steuererhebung: \n</t>
+        <t id="31002">Credits wurden eingefordert von(amount stations)</t>
+        <t id="31003">Stationen</t>
+        <t id="31004">Detaillierte Übersicht:\nErhaltene Steuern:</t>
+        <t id="31005">Stationsdetails:</t>
+        <t id="31006">Steuer:</t>
+        <t id="31007">Stationsinstandhaltung:</t>
+        <t id="31008">Nicht genügend Credits zum Begleichen der Stationskosten vorhanden.\nGesamtkosten für( amount stations)</t>
+        <t id="31009">Gesamtkosten für( amount stations)</t>
+        <t id="31010">Detaillierte Übersicht:\nBezahlte Steuern:</t>
+        <t id="31011">Bezahlte Instandhaltungskosten:</t>
+        <t id="31012">Gesamt:</t>
+        <t id="31013">Instandhaltung:</t>
+        <t id="31014">Ansehen bei( faction)</t>
+        <t id="31015">(Relations with faction)hat sich verändert, von</t>
+        <t id="31016">(Relations with faction have changed from number)auf(new number)</t>
+        <t id="31017">Ansehensveränderung:</t>
 	</page>
 </language>
