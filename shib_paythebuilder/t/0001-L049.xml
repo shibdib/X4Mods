@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<language>
+    <page id="7442342"  title="Paythebuilder" descr="Names and descriptions" voice="no">
+        <t id="32001">Konstruktionsauftragsvergütung:</t>
+        <t id="32002">%s Credits wurden an %s gezahlt.</t>
+        <t id="32003">%s Credits wurden für die Dienste des Schiffes %s für die Fertigstellung von %s in %s gezahlt.</t>
+	</page>
+</language>
