@@ -4,7 +4,7 @@
         <params>
             <!-- Where the reaction force will base itself -->
             <param name="home" default="this.sector" type="object" text="{7442342,30102}" comment="{7442342,301003}">
-                <input_param name="class" value="if this.ship.isclass.[class.ship_s, class.ship_xs] then [class.sector, class.station, class.ship_m, class.ship_l, class.ship_xl] else [class.sector, class.station, class.ship_l, class.ship_xl]"/>
+                <input_param name="class" value="[class.sector, class.station, class.ship]"/>
             </param>
             <!-- Should we dock when idle? -->
             <param name="dockWhenIdle" type="bool" default="false" text="{7442342,30104}" comment="{7442342,30105}"/>
