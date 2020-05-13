@@ -268,7 +268,7 @@
                             <show_notification text="{7442342,30122}.[this.ship.knownname, $responseTarget.knownname]"
                                                priority="9"/>
                         </do_if>
-                        <write_to_logbook category="alerts" title="{7442342,30123}:"
+                        <write_to_logbook category="alerts" title="{7442342,30123}"
                                           text="{7442342,30124}.[this.ship.knownname, $responseTarget.knownname, $responseTarget.sector.knownname]"/>
                         <set_value name="$responding" exact="true"/>
                         <set_value name="$responseTime" exact="player.age"/>
