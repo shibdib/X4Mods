@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+CHANGES
+- Add an interrupt for reaction force to not chase ships across space
+-->
+<diff>
+    <add sel="/aiscript/interrupts" pos="prepend">
+        <!-- If your escort target is too far away cancel -->
+        <handler>
+            <conditions>
+                <event_object_changed_sector object="this.ship"/>
+                <!-- Reaction Force Ship With Range Var -->
+                <check_value value="this.ship.defaultorder.id == 'ReactionForce' and this.ship.$reactionRange"/>
+                <!-- Has response target -->
+                <check_value value="$target"/>
+                <!-- Distance check-->
+                <check_value value="this.ship.$reactionRange le $target.sector.gatedistance.{this.ship.$reactionHome}"/>
+            </conditions>
+            <actions>
+                <cancel_all_orders object="this.ship"/>
+                <resume label="finish"/>
+            </actions>
+        </handler>
+    </add>
+</diff>
