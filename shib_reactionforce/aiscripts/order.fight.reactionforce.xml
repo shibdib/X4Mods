@@ -166,48 +166,18 @@
                 </do_if>
             </actions>
         </handler>
-        <!-- If your escort target is too far away cancel -->
-        <handler>
-            <conditions>
-                <event_object_changed_sector object="this.ship"/>
-                <!-- Subordinates ignore -->
-                <check_value value="@$reactionSubordinate == null"/>
-                <check_any>
-                    <check_all>
-                        <!-- Has response target -->
-                        <check_value value="$responseTarget"/>
-                        <!-- Distance check-->
-                        <check_value value="$responseRange lt $responseTarget.sector.gatedistance.{if $home.isclass.sector then $home else $home.sector}"/>
-                    </check_all>
-                    <check_all>
-                        <!-- Has aggressor target -->
-                        <check_value value="$aggressor"/>
-                        <!-- Distance check-->
-                        <check_value value="$responseRange lt $aggressor.sector.gatedistance.{if $home.isclass.sector then $home else $home.sector}"/>
-                    </check_all>
-                </check_any>
-            </conditions>
-            <actions>
-                <cancel_all_orders object="this.ship"/>
-                <set_value name="$responseTime" exact="null"/>
-                <set_value name="$responding" exact="null"/>
-                <set_value name="$responseTarget" exact="null"/>
-                <set_value name="$idling" exact="null"/>
-                <set_value name="$activeResponse" exact="null"/>
-                <set_value name="$aggressor" exact="null"/>
-                <resume label="start"/>
-            </actions>
-        </handler>
     </interrupts>
     <!--INIT-->
     <init>
-        <set_value name="global.$reactionForceVersion" exact="200"/>
+        <set_value name="global.$reactionForceVersion" exact="203"/>
         <set_value name="$started" exact="player.age"/>
         <set_value name="$responseTime" exact="null"/>
         <set_value name="$responseTarget" exact="null"/>
         <set_value name="$aggressor" exact="null"/>
         <set_value name="$responding" exact="null"/>
         <set_value name="$idling" exact="null"/>
+        <set_value name="this.ship.$reactionRange" exact="$responseRange"/>
+        <set_value name="this.ship.$reactionHome" exact="if $home.isclass.sector then $home else $home.sector"/>
     </init>
     <attention min="unknown">
         <actions>
