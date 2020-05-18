@@ -13,7 +13,7 @@
                 </check_any>
             </conditions>
             <actions>
-                <show_help duration="5s" custom="'Landlord Installed.'"/>
+                <show_help duration="5s" custom="'{7442342,31000}'"/>
                 <set_value name="global.$lastCheckedPayments" exact="player.age"/>
                 <set_value name="global.$lastCheckedCollector" exact="player.age - 1h"/>
                 <set_value name="global.$missedPayment" exact="0"/>
@@ -73,11 +73,11 @@
                                 </do_if>
                             </do_all>
                             <do_if value="$totalStations gt 0">
-                                <set_value name="$textHeader" exact="'Tax Collection: \n'"/>
-                                <set_value name="$textBasic" exact="'%s credits collected from %s stations.'.[$taxes, $totalStations]"/>
-                                <set_value name="$textDetailed" exact="'Detailed Overview:\nTaxes Received: %s Credits\n\nStation Details:'.[$taxes]"/>
+                                <set_value name="$textHeader" exact="{7442342,31001} + '\n'"/>
+                                <set_value name="$textBasic" exact="{7442342,31002}.[$taxes, $totalStations]"/>
+                                <set_value name="$textDetailed" exact="{7442342,31003}.[$taxes]"/>
                                 <do_all exact="$stationList.count" counter="$c">
-                                    <set_value name="$textDetailed" operation="add" exact="'\n%s (%s) - Tax: %s Credits'.[$stationList.{$c}.{1}, $stationList.{$c}.{2}, $stationList.{$c}.{3}]"/>
+                                    <set_value name="$textDetailed" operation="add" exact="'\033Y' + '\n%1 \(%2\)\n' + '\033X' + {7442342,31004} + '\n'.[$stationList.{$c}.{1}, $stationList.{$c}.{2}, $stationList.{$c}.{3}]"/>
                                 </do_all>
                                 <show_notification text="$textHeader + $textBasic" timeout="10s"/>
                                 <write_to_logbook title="$textHeader" category="upkeep" text="$textDetailed"
@@ -165,7 +165,7 @@
                                 <set_value name="$maintenanceCosts" operation="add" exact="($stationMaintenanceCosts)ct"/>
                             </do_all>
                             <set_value name="$totalCost" exact="($maintenanceCosts + $taxes)"/>
-                            <set_value name="$textHeader" exact="'Station Maintenance: \n'"/>
+                            <set_value name="$textHeader" exact="{7442342,31005} + '\n'"/>
                             <set_value name="$moneyChange" exact="-$totalCost"/>
 
                             <!--
@@ -195,7 +195,7 @@
                                         </do_if>
                                     </do_all>
                                 </do_if>
-                                <set_value name="$textBasic" exact="'Unable to afford station costs.\nTotal cost for %s Stations, %s Credits.'.[$playerStations.count, ($moneyChange)ct]"/>
+                                <set_value name="$textBasic" exact="{7442342,31006}.[$playerStations.count, ($moneyChange)ct]"/>
                             </do_if>
 
                             <!--
@@ -205,12 +205,12 @@
                                 <do_if value="global.$missedPayment gt 0">
                                     <set_value name="global.$missedPayment" operation="subtract" exact="1"/>
                                 </do_if>
-                                <set_value name="$textBasic" exact="'Total cost for %s Stations, %s Credits.'.[$playerStations.count, ($moneyChange)ct]"/>
+                                <set_value name="$textBasic" exact="{7442342,31007}.[$playerStations.count, ($moneyChange)ct]"/>
                             </do_else>
                             <!-- Notification and log outputs -->
-                            <set_value name="$textDetailed" exact="'Detailed Overview:\nTaxes Paid: %s Credits\nMaintenance Costs: %s Credits\nTotal: %s Credits\n\nStation Details:'.[$taxes, $maintenanceCosts, ($moneyChange)ct]"/>
+                            <set_value name="$textDetailed" exact="{7442342,31008}.[$taxes, $maintenanceCosts, ($moneyChange)ct]"/>
                             <do_all exact="$stationList.count" counter="$c">
-                                <set_value name="$textDetailed" operation="add" exact="'\n%s (%s) - Tax: %s - Maintenance: %s Credits'.[$stationList.{$c}.{1}, $stationList.{$c}.{2}, $stationList.{$c}.{3}, $stationList.{$c}.{5}]"/>
+                                <set_value name="$textDetailed" operation="add" exact="{7442342,31009}.[$stationList.{$c}.{1}, $stationList.{$c}.{2}, $stationList.{$c}.{3}, $stationList.{$c}.{5}]"/>
                             </do_all>
                             <show_notification text="$textHeader + $textBasic" timeout="10s"/>
                             <write_to_logbook title="$textHeader" category="upkeep" text="$textDetailed"
@@ -238,8 +238,8 @@
                             </do_else>
                             <set_faction_relation faction="$factionOne" otherfaction="$factionTwo" value="$newRelationValue"/>
                         </do_else>
-                        <set_value name="$text" exact="'Relations with %s have changed from %s to %s.'.[$factionOne.knownname, $uiValue, ($uiValue + ($uiChangeAmount))]"/>
-                        <write_to_logbook title="'Relationship Change:'" category="alerts" text="$text"/>
+                        <set_value name="$text" exact="{7442342,31010}.[$factionOne.knownname, $uiValue, ($uiValue + ($uiChangeAmount))]"/>
+                        <write_to_logbook title="{7442342,31011}" category="alerts" text="$text"/>
                     </actions>
                 </library>
             </cues>

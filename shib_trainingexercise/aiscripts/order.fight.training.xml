@@ -1,9 +1,9 @@
 <aiscript name="trainingexercise" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://x4libonline.ddns.net/libraries/aiscripts.xsd" version="1">
     <!-- Setup context menu order-->
-    <order id="TrainingExercise" name="Training Exercise" description="Train with your subordinates to gain experience." category="combat" infinite="true">
+    <order id="TrainingExercise" name="{7442342,33000}" description="{7442342,33001}" category="combat" infinite="true">
         <params>
             <!-- Where the training will occur -->
-            <param name="home" default="this.sector" type="object" text="Training Sector" comment="Training Sector">
+            <param name="home" default="this.sector" type="object" text="{7442342,33002}" comment="{7442342,33002}">
                 <input_param name="class" value="[class.sector]"/>
             </param>
         </params>

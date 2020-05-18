@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<language>
+    <page id="7442342"  title="Paythebuilder" descr="Names and descriptions" voice="no">
+        <t id="32001">Builder Payment:</t>
+        <t id="32002">%s credits collected by %s.</t>
+        <t id="32003">%s credits collected by %s for completing construction at %s in %s.</t>
+	</page>
+</language>
