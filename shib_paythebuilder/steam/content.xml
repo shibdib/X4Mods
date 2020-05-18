@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="ws_2085220886" name="Pay The Builder" author="Shibdib" version="101" date="2020-05-04" save="0"
+<content id="ws_2085220886" name="Pay The Builder" author="Shibdib" version="101" date="2020-05-18" save="0"
          description="NPCs will pay your builder ships on completion of constructions." enabled="1" sync="false"
-         lastupdate="1588640830">
+         lastupdate="1589836858">
   <text language="44" name="Pay The Builder" author="Shibdib"
         description="NPCs will pay your builder ships on completion of constructions."/>
   <text language="49" name="Pay The Builder" author="Shibdib"
