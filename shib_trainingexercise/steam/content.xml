@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<content id="ShibTrainingExercise" name="ws_2081316159" author="Shibdib" version="11" date="2020-05-01" save="0"
+         description="Adds an order to the game where your ships will train to gain experience." enabled="1"
+         sync="false" lastupdate="1587976503">
+    <text language="44" name="Training Exercise" author="Shibdib"
+          description="Adds an order to the game where your ships will train to gain experience."/>
+    <text language="49" name="Training Exercise" author="Shibdib"
+          description="Fügt einen Schiffsbefehl hinzu, um Flotten gemeinsam trainieren und Pilotenerfahrung sammeln zu lassen."/>
+</content>
