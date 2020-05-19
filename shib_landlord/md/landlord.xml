@@ -77,7 +77,8 @@
                                 <set_value name="$textBasic" exact="{7442342,31002}.[$taxes, $totalStations]"/>
                                 <set_value name="$textDetailed" exact="{7442342,31003}.[$taxes]"/>
                                 <do_all exact="$stationList.count" counter="$c">
-                                    <set_value name="$textDetailed" operation="add" exact="'\033Y' + '\n%1 \(%2\)\n' + '\033X' + {7442342,31004} + '\n'.[$stationList.{$c}.{1}, $stationList.{$c}.{2}, $stationList.{$c}.{3}]"/>
+                                    <set_value name="$textDetailed" operation="add"
+                                               exact="'\033Y' + '\n%1 (%2)\n' + '\033X' + {7442342,31004} + '\n'.[$stationList.{$c}.{1}, $stationList.{$c}.{2}, $stationList.{$c}.{3}]"/>
                                 </do_all>
                                 <show_notification text="$textHeader + $textBasic" timeout="10s"/>
                                 <write_to_logbook title="$textHeader" category="upkeep" text="$textDetailed"
