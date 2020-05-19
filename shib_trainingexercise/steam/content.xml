@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="ws_2081316159" name="Training Exercise" author="Shibdib" version="111" date="2020-05-18" save="0"
+<content id="ws_2081316159" name="Training Exercise" author="Shibdib" version="120" date="2020-05-18" save="0"
          description="Adds an order to the game where your ships will train to gain experience." enabled="1"
          sync="false" lastupdate="1589836912">
   <text language="44" name="Training Exercise" author="Shibdib"

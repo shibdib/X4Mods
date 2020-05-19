@@ -38,7 +38,7 @@
     </interrupts>
     <!--INIT-->
     <init>
-        <set_value name="global.$trainingExerciseVersion" exact="112"/>
+        <set_value name="global.$trainingExerciseVersion" exact="111"/>
         <set_value name="$started" exact="player.age"/>
         <set_value name="$lastGainCheck" exact="player.age"/>
         <set_order_syncpoint_reached order="this.ship.order"/>
@@ -66,10 +66,10 @@
                                list="['ship_disable_easy', 'ship_kill_hard', 'ship_flee', 'ship_trade_normal', 'ship_opened_lockbox']"/>
                     <apply_experience entity="this" experience="$expEvent"/>
                     <!-- notify -->
-                    <show_notification text="{7442342,33003} + {7442342,33004}.[this.ship.knownname, this.knownname]"
+                    <show_notification text="{7442342,33003} + {7442342,33004}.[this.knownname, this.ship.knownname]"
                                        timeout="10s"/>
                     <write_to_logbook title="{7442342,33003}" category="general"
-                                      text="{7442342,33004}.[this.ship.knownname, this.knownname]"/>
+                                      text="{7442342,33004}.[this.knownname, this.ship.knownname]"/>
                 </do_if>
                 <!-- Subordinates also might gain XP -->
                 <do_if value="this.ship.allsubordinates.count">
@@ -77,16 +77,16 @@
                         <set_value name="$subordinate" exact="this.ship.allsubordinates.{$c}"/>
                         <!-- If your commander is more skilled than you there's a higher chance you gain xp -->
                         <do_if value="2 gt 1"
-                               chance="if this.combinedskill gt $subordinate.assignedpilot.combinedskill 175 else 105">
+                               chance="if this.combinedskill gt $subordinate.assignedpilot.combinedskill then 175 else 105">
                             <debug_text
                                     text="'SHIB Training Exercise - %s - XP Check Passed!'.[$subordinate.knownname]"/>
                             <apply_experience entity="$subordinate.assignedpilot" experience="$expEvent"/>
                             <!-- notify -->
                             <show_notification
-                                    text="{7442342,33003} + {7442342,33004}.[$subordinate.knownname, $subordinate.assignedpilot.knownname]"
+                                    text="{7442342,33003} + {7442342,33004}.[$subordinate.assignedpilot.knownname, $subordinate.knownname]"
                                     timeout="10s"/>
                             <write_to_logbook title="{7442342,33003}" category="general"
-                                              text="{7442342,33004}.[this.ship.knownname, this.knownname]"/>
+                                              text="{7442342,33004}.[$subordinate.assignedpilot.knownname, $subordinate.knownname]"/>
                         </do_if>
                     </do_all>
                 </do_if>
