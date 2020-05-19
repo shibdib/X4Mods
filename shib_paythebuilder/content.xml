@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="ShibPayTheBuilder" name="Pay The Builder" author="Shibdib" version="101" date="2020-05-02" save="0"
+<content id="ShibPayTheBuilder" name="Pay The Builder" author="Shibdib" version="102" date="2020-05-02" save="0"
          description="NPCs will pay your builder ships on completion of constructions." enabled="1">
     <text language="44" name="Pay The Builder" author="Shibdib"
           description="NPCs will pay your builder ships on completion of constructions."/>
