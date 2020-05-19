@@ -176,8 +176,6 @@
         <set_value name="$aggressor" exact="null"/>
         <set_value name="$responding" exact="null"/>
         <set_value name="$idling" exact="null"/>
-        <set_value name="this.ship.$reactionRange" exact="$responseRange"/>
-        <set_value name="this.ship.$reactionHome" exact="if $home.isclass.sector then $home else $home.sector"/>
     </init>
     <attention min="unknown">
         <actions>
