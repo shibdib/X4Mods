@@ -312,15 +312,15 @@
                         <set_command command="command.protect" param="$home"/>
                         <run_script name="'order.fight.protect.station'">
                             <param name="station" value="$home"/>
-                            <param name="timeout" value="300s"/>
+                            <param name="timeout" value="600s"/>
                         </run_script>
                     </do_elseif>
                     <do_elseif value="$home.isclass.ship">
-                        <debug_text text="'SHIB Reaction Force - %s - Idle Station Guard'.[this.ship.knownname]"/>
+                        <debug_text text="'SHIB Reaction Force - %s - Idle Ship Guard'.[this.ship.knownname]"/>
                         <set_command command="command.protect" param="$home"/>
                         <run_script name="'order.fight.protect.ship'">
                             <param name="target" value="$home"/>
-                            <param name="timeout" value="300s"/>
+                            <param name="timeout" value="600s"/>
                         </run_script>
                     </do_elseif>
                 </do_if>
@@ -330,7 +330,7 @@
                     <set_command command="command.patrol"/>
                     <run_script name="'order.fight.patrol'">
                         <param name="space" value="$home"/>
-                        <param name="timeout" value="300s"/>
+                        <param name="timeout" value="600s"/>
                     </run_script>
                 </do_else>
             </do_elseif>
