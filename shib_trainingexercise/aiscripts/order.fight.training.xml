@@ -17,10 +17,28 @@
         <handler ref="InspectedHandler"/>
         <handler ref="TargetInvalidHandler"/>
         <handler ref="ResupplyHandler"/>
+        <!-- Reload order if using old version -->
+        <handler>
+            <conditions>
+                <check_all>
+                    <event_game_loaded/>
+                    <!-- Version check -->
+                    <check_value value="global.$trainingExerciseVersion != 112"/>
+                </check_all>
+            </conditions>
+            <actions>
+                <debug_text
+                        text="'SHIB Training Exercise - %s - Resetting order to update to latest version.'.[this.ship.knownname]"/>
+                <cancel_all_orders object="this.ship"/>
+                <create_order object="this.ship" id="'TrainingExercise'" default="true">
+                    <param name="home" value="$home"/>
+                </create_order>
+            </actions>
+        </handler>
     </interrupts>
     <!--INIT-->
     <init>
-        <debug_text text="'SHIB Training Exercise - %s - INIT'.[this.ship.knownname]"/>
+        <set_value name="global.$trainingExerciseVersion" exact="112"/>
         <set_value name="$started" exact="player.age"/>
         <set_value name="$lastGainCheck" exact="player.age"/>
         <set_order_syncpoint_reached order="this.ship.order"/>
@@ -41,14 +59,35 @@
             <do_if value="($lastGainCheck + 180s) lt player.age">
                 <debug_text text="'SHIB Training Exercise - %s - XP Check'.[this.ship.knownname]"/>
                 <set_value name="$lastGainCheck" exact="player.age"/>
-                <!-- Select random experience event to keep gain random -->
-                <set_value name="$expEvent" list="['ship_disable_easy', 'ship_kill_hard', 'ship_flee', 'ship_trade_normal', 'ship_opened_lockbox']"/>
-                <apply_experience entity="this" experience="$expEvent" chance="(105 - this.combinedskill)"/>
+                <do_if value="2 gt 1" chance="(105 - this.combinedskill)">
+                    <debug_text text="'SHIB Training Exercise - %s - XP Check Passed!'.[this.ship.knownname]"/>
+                    <!-- Select random experience event to keep gain random -->
+                    <set_value name="$expEvent"
+                               list="['ship_disable_easy', 'ship_kill_hard', 'ship_flee', 'ship_trade_normal', 'ship_opened_lockbox']"/>
+                    <apply_experience entity="this" experience="$expEvent"/>
+                    <!-- notify -->
+                    <show_notification text="{7442342,33003} + {7442342,33004}.[this.ship.knownname, this.knownname]"
+                                       timeout="10s"/>
+                    <write_to_logbook title="{7442342,33003}" category="general"
+                                      text="{7442342,33004}.[this.ship.knownname, this.knownname]"/>
+                </do_if>
                 <!-- Subordinates also might gain XP -->
                 <do_if value="this.ship.allsubordinates.count">
                     <do_all exact="this.ship.allsubordinates.count" counter="$c">
                         <set_value name="$subordinate" exact="this.ship.allsubordinates.{$c}"/>
-                        <apply_experience entity="$subordinate.assignedpilot" experience="$expEvent" chance="(105 - $subordinate.assignedpilot.combinedskill)"/>
+                        <!-- If your commander is more skilled than you there's a higher chance you gain xp -->
+                        <do_if value="2 gt 1"
+                               chance="if this.combinedskill gt $subordinate.assignedpilot.combinedskill 175 else 105">
+                            <debug_text
+                                    text="'SHIB Training Exercise - %s - XP Check Passed!'.[$subordinate.knownname]"/>
+                            <apply_experience entity="$subordinate.assignedpilot" experience="$expEvent"/>
+                            <!-- notify -->
+                            <show_notification
+                                    text="{7442342,33003} + {7442342,33004}.[$subordinate.knownname, $subordinate.assignedpilot.knownname]"
+                                    timeout="10s"/>
+                            <write_to_logbook title="{7442342,33003}" category="general"
+                                              text="{7442342,33004}.[this.ship.knownname, this.knownname]"/>
+                        </do_if>
                     </do_all>
                 </do_if>
             </do_if>

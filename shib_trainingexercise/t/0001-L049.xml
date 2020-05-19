@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <language>
-    <page id="7442342"  title="Training Exercise" descr="Names and descriptions" voice="no">
+    <page id="7442342" title="Training Exercise" descr="Names and descriptions" voice="no">
         <t id="33000">Flottenübung</t>
         <t id="33001">Flottenübung, um gemeinsam Erfahrung zu gewinnen.</t>
         <t id="33002">Trainingssektor</t>
-	</page>
+        <t id="33003">AUSBILDUNGSERFOLG:\n</t>
+        <t id="33004">%s im %s erfolgreich trainiert.</t>
+    </page>
 </language>
