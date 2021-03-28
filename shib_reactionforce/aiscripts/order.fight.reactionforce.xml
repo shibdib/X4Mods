@@ -204,28 +204,6 @@
                             </do_if>
                         </do_all>
                     </do_if>
-                    <!-- Check response target -->
-                    <set_value name="$clearResponse" exact="null"/>
-                    <!-- Dead response target -->
-                    <do_if value="not $responseTarget.exists">
-                        <set_value name="$clearResponse" exact="true"/>
-                    </do_if>
-                    <!-- No longer damaged enough -->
-                    <do_elseif value="(($responseTarget.isclass.station and $stationResponse == true and (($responseTarget.hullpercentage + $responseTarget.shieldpercentage) - 5) gt ($hpCutoffStation + ($hpCutoffStation * ($responseTarget.maxshield != 0)))) or
-                ($responseTarget.isclass.ship and $shipResponse == true and (($responseTarget.hullpercentage + $responseTarget.shieldpercentage) - 5) gt ($hpCutoffShip + ($hpCutoffShip * ($responseTarget.maxshield != 0))))) and ($responseTime + 180s) lt player.age">
-                        <set_value name="$clearResponse" exact="true"/>
-                    </do_elseif>
-                    <!-- If response needs to be cleared do so -->
-                    <do_if value="$clearResponse">
-                        <debug_text text="'SHIB Reaction Force - %s - No longer responding to %s'.[this.ship.knownname, $responseTarget.knownname]"/>
-                        <set_value name="$responseTime" exact="null"/>
-                        <set_value name="$responding" exact="null"/>
-                        <set_value name="$responseTarget" exact="null"/>
-                        <set_value name="$idling" exact="null"/>
-                        <set_value name="$activeResponse" exact="null"/>
-                        <set_value name="$aggressor" exact="null"/>
-                        <resume label="start"/>
-                    </do_if>
                     <do_else>
                         <!-- Get some XP for responding -->
                         <apply_experience entity="this" experience="'ship_disable_easy'" chance="20"/>
@@ -268,8 +246,44 @@
                         </do_if>
                     </do_else>
                 </do_if>
+                <do_else>
+                    <!-- Check response target -->
+                    <set_value name="$clearResponse" exact="null"/>
+                    <!-- Dead response target -->
+                    <do_if value="not $responseTarget.exists">
+                        <set_value name="$clearResponse" exact="true"/>
+                        <debug_text
+                                text="'SHIB Reaction Force - %s - No longer responding to %s as it is dead'.[this.ship.knownname, $responseTarget.knownname]"/>
+                    </do_if>
+                    <!-- No longer damaged enough -->
+                    <do_elseif value="(($responseTarget.isclass.station and $stationResponse == true and (($responseTarget.hullpercentage + $responseTarget.shieldpercentage) - 5) gt ($hpCutoffStation + ($hpCutoffStation * ($responseTarget.maxshield != 0)))) or
+                    ($responseTarget.isclass.ship and $shipResponse == true and (($responseTarget.hullpercentage + $responseTarget.shieldpercentage) - 5) gt ($hpCutoffShip + ($hpCutoffShip * ($responseTarget.maxshield != 0))))) and ($responseTime + 180s) lt player.age">
+                        <set_value name="$clearResponse" exact="true"/>
+                        <debug_text
+                                text="'SHIB Reaction Force - %s - No longer responding to %s as it is no longer damaged enough'.[this.ship.knownname, $responseTarget.knownname]"/>
+                    </do_elseif>
+                    <!-- Target out of range -->
+                    <do_elseif
+                            value="$responseRange lt event.object.sector.gatedistance.{if $home.isclass.sector then $home else $home.sector} and event.object.sector.knownname != if $home.isclass.sector then $home else $home.sector">
+                        <debug_text
+                                text="'SHIB Reaction Force - %s - No longer responding to %s as it is out of range'.[this.ship.knownname, $responseTarget.knownname]"/>
+                        <set_value name="$clearResponse" exact="true"/>
+                    </do_elseif>
+                    <!-- If response needs to be cleared do so -->
+                    <do_if value="$clearResponse">
+                        <debug_text
+                                text="'SHIB Reaction Force - %s - No longer responding to %s'.[this.ship.knownname, $responseTarget.knownname]"/>
+                        <set_value name="$responseTime" exact="null"/>
+                        <set_value name="$responding" exact="null"/>
+                        <set_value name="$responseTarget" exact="null"/>
+                        <set_value name="$idling" exact="null"/>
+                        <set_value name="$activeResponse" exact="null"/>
+                        <set_value name="$aggressor" exact="null"/>
+                        <resume label="start"/>
+                    </do_if>
+                </do_else>
             </do_if>
-            <!-- If no response target it set and ship doesn't already have idle orders -->
+            <!-- If no response target is set and ship doesn't already have idle orders -->
             <do_elseif value="$idling == null and $responseTarget == null">
                 <debug_text text="'SHIB Reaction Force - %s - IDLE'.[this.ship.knownname]"/>
                 <set_value name="$responseTime" exact="null"/>
