@@ -62,7 +62,7 @@
                     <!-- Subordinates ignore -->
                     <check_value value="@$reactionSubordinate == null"/>
                     <!-- Version check -->
-                    <check_value value="global.$reactionForceVersion != 202"/>
+                    <check_value value="global.$reactionForceVersion != 203"/>
                 </check_all>
             </conditions>
             <actions>
