@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<language>
+    <page id="7442342"  title="Paythebuilder" descr="Names and descriptions" voice="no">
+        <t id="32001">建築作業費:</t>
+        <t id="32002">%s クレジットを %s が受け取りました。</t>
+        <t id="32003">%s クレジットを %s による %s の建築作業費として %s で受け取りました。</t>
+	</page>
+</language>
