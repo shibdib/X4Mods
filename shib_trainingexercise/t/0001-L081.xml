@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<language>
+    <page id="7442342" title="Training Exercise" descr="Names and descriptions" voice="no">
+        <t id="33000">訓練飛行</t>
+        <t id="33001">部下とともに訓練し、経験を積みます。</t>
+        <t id="33002">訓練宙域</t>
+        <t id="33003">訓練成功:\n</t>
+        <t id="33004">%s が %s で訓練を完了しました。</t>
+    </page>
+</language>
