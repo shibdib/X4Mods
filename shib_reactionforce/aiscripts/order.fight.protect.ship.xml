@@ -15,7 +15,7 @@ CHANGES
                 <check_value value="$target"/>
                 <!-- Distance check-->
                 <check_value
-                        value="this.ship.defaultorder.$reactionRange lt $target.sector.gatedistance.{this.ship.defaultorder.$reactionHome}"/>
+                        value="this.ship.defaultorder.$responseRange lt $target.sector.gatedistance.{this.ship.defaultorder.$home}"/>
             </conditions>
             <actions>
                 <cancel_all_orders object="this.ship"/>

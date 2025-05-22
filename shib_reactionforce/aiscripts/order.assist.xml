@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<diff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="aiscripts.xsd">
+<add sel="//do_if[@value='(@$orderdef and $createdefaultorder?) or not $order.requiredskill or (this.combinedskill ge $order.requiredskill)']">
+<!-- <add sel="/aiscript/attention/actions/do_if/do_if [@value='not $order.requiredskill or (this.combinedskill ge $order.requiredskill)']"> -->
+	<do_if value="$order.id == 'ReactionForce'">
+		<set_value name="$added"/>
+		<run_script name="$order.script">
+			<param name="home" value="$order.$home"/>
+			<param name="homePos" value="$order.$homePos"/>
+            <param name="whenIdle" value="$order.$whenIdle"/>
+            <!-- <param name="assignToHome" value="$order.$assignToHome"/> -->
+            <param name="assignToHome" value="false"/>
+            <param name="responseRange" value="$order.$responseRange"/>
+			<param name="allowedRisk" value="$order.$allowedRisk"/>
+            <param name="shipResponse" value="$order.$shipResponse"/>
+            <param name="hpCutoffShip" value="$order.$hpCutoffShip"/>
+            <param name="shipFightResponse" value="$order.$shipFightResponse"/>
+            <param name="hpCutoffShipFight" value="$order.$hpCutoffShipFight"/>
+			<param name="stationResponse" value="$order.$stationResponse"/>
+            <param name="hpCutoffStation" value="$order.$hpCutoffStation"/>
+            <param name="def_timeout" value="$order.$def_timeout"/>
+            <param name="playerResponse" value="$order.$playerResponse"/>
+			<param name="distressResponse" value="$order.$distressResponse"/>
+            <param name="notifyMe" value="$order.$notifyMe"/>
+            <param name="attS" value="$order.$attS"/>
+            <param name="attM" value="$order.$attM"/>
+            <param name="attL" value="$order.$attL"/>
+            <param name="attXL" value="$order.$attXL"/>
+            <param name="reactionSubordinate" value="$order.$reactionSubordinate"/>
+            <param name="activeResponse" value="$order.$activeResponse"/>
+            <!-- don't copy deprecated params -->
+		</run_script>
+	</do_if>
+</add>
+</diff>

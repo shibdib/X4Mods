@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<language>
+    <page id="7442342"  title="Reaction force" descr="Names and descriptions of settings" voice="no">
+		<t id="30100">防卫</t>	
+		<t id="30101">当敌人攻击你附件的资产时做出反应.</t>
+		<t id="30102">基地</t>
+		<t id="30103">星区/空间站</t>
+		<t id="30104">空闲状态</t>
+		<t id="30105">在空闲时停靠空间站，如果基地不是空间站则会保持巡逻.</t>
+		<t id="30106">响应范围(跳)</t>
+		<t id="30107">做出反应的最大响应范围.</t>
+		<t id="30108">响应船只呼叫</t>
+		<t id="30109">我们是否对船只的支援请求做出响应? \(在响应范围内\)</t>
+		<t id="30110">剩余血量响应阈值(船只)</t>
+		<t id="30111">血量\(船体 + 护盾\) 百分比触发阈值.</t>
+		<t id="30112">响应空间站呼叫</t>
+		<t id="30113">我们是否对空间站的支援请求做出响应? \(在响应范围内\)</t>
+		<t id="30114">剩余血量响应阈值(空间站)</t>
+		<t id="30115">血量\(船体 + 护盾\) 百分比触发阈值.</t>
+		<t id="30116">响应玩家呼叫</t>
+		<t id="30117">我们是否对玩家的支援请求做出响应?</t>
+		<t id="30118">响应盟友呼叫</t>
+		<t id="30119">我们是否对盟友的支援请求做出响应?</t>
+		<t id="30120">启用通知</t>
+		<t id="30121">是否在支援时通知你?</t>	
+		<t id="30122">REACTION FORCE:\n%s has been dispatched to %s</t>
+		<t id="30123">REACTION FORCE DISPATCHED:</t>
+		<t id="30124">REACTION FORCE DISPATCHED:'" text="'REACTION FORCE:\n%s %s has been dispatched to %s %s in %s\nLastresponse: %s Time: %s.</t>
+		
+		<t id="30125">指定基地</t>
+		<t id="30126">停靠 | 保持 | 自定义 | 巡逻</t>
+		<t id="30127">允许的威胁级别</t>
+		<t id="30128">响应船只</t>
+		<t id="30129">血量响应船只</t>
+		<t id="30130">禁用通知</t>
+		<t id="30131">攻击S</t>
+		<t id="30132">攻击M</t>
+		<t id="30133">攻击L</t>
+		<t id="30134">攻击XL</t>
+		
+		<t id="40001">Reaction force debug</t>
+		<t id="40002">Enemy ship count: %s\nEnemy HP: %s\nEnemy DPS: %s\nOur HP: %s\nOur DPS: %s\nPredicting: %s</t>
+	</page>
+</language>

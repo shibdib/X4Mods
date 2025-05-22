@@ -26,5 +26,19 @@
 		<t id="30122">REAKTIONSSTREITKRÄFTE:\n%s wurden zu %s entsandt</t>
 		<t id="30123">REAKTIONSSTREITKRÄFTE ENTSANDT:</t>
 		<t id="30124">REAKTIONSSTREITKRÄFTE:\n%s wurden zu %s nach %s entsandt</t>
+		
+		<t id="30125">Assign as home base?</t>
+		<t id="30126">Dock | Hold | Def | Patrol</t>
+		<t id="30127">Allowed threat level</t>
+		<t id="30128">Respond to C ships</t>
+		<t id="30129">HP% Response Point(C Ships)</t>
+		<t id="30130">Silent notificatons</t>
+		<t id="30131">Attack S</t>
+		<t id="30132">Attack M</t>
+		<t id="30133">Attack L</t>
+		<t id="30134">Attack XL</t>
+		
+		<t id="40001">Reaction force debug</t>
+		<t id="40002">Enemy ship count: %s\nEnemy HP: %s\nEnemy DPS: %s\nOur HP: %s\nOur DPS: %s\nPredicting: %s</t>
 	</page>
 </language>
