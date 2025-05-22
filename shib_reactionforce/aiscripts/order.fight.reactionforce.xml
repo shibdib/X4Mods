@@ -1,4 +1,4 @@
-<aiscript name="reactionforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://x4libonline.ddns.net/libraries/aiscripts.xsd" version="1">
+<aiscript name="reactionforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../X4Extracts/aiscripts/aiscripts.xsd" version="1">
     <!-- Setup context menu order-->
     <order id="ReactionForce" name="{7442342,30100}" description="{7442342,30101}" category="combat" infinite="true">
         <params>
@@ -589,7 +589,7 @@
 				<write_to_logbook category="alerts" title="'Reaction force operation aborted'" text="'%s - No longer responding to %s. Reason: response target does not exist, and all enemies are gone'.[this.ship.knownname, $responseTarget.knownname]" interaction="showonmap" object="this.ship"/>
 			</do_elseif>
             <!-- If no response target is set and ship doesn't already have idle orders -->
-            <do_elseif value="$idling == null and $responseTarget == null">
+            <do_else value="$idling == null and $responseTarget == null">
 				<!--write_to_logbook category="alerts" title="'Reaction force on standby'" text="'%s - Is currently on standby.'.[this.ship.knownname]" interaction="showonmap" object="this.ship"/-->
                 <set_value name="$responseTime" exact="null"/>
                 <set_value name="$responding" exact="false"/>
@@ -641,14 +641,15 @@
                             <param name="timeout" value="0s"/>
                         </run_script>
                     </do_elseif>
-					<!-- Patrol sector, just like always -->
-					<do_elseif value="$patrolWhenIdle">
+					<!-- Patrol sector, fallback to patrol -->
+					<do_else>
 						<set_command command="command.patrol"/>
 						<run_script name="'order.fight.patrol'">
 							<param name="space" value="$home.sector"/>
+							<param name="range" value="class.sector"/>
 							<param name="timeout" value="0s"/>
 						</run_script>
-					</do_elseif>
+					</do_else>
 					<resume label="resupply"/>
                 </do_if>
                 <!-- If home is a sector / position -->
@@ -660,18 +661,21 @@
 						</run_script>
 					</do_if>
 					<do_elseif value="$defWhenIdle">
-						<set_command command="command.patrol" />
+						<set_command command="command.protect" param="$home"/>
 						<run_script name="'order.fight.protect.position'">
-							<param name="destination" value="$homePos"/>
-						</run_script>
-					</do_elseif>
-					<do_elseif value="$patrolWhenIdle">
-						<set_command command="command.patrol"/>
-						<run_script name="'order.fight.patrol'">
-							<param name="space" value="$home"/>
+							<param name="destination" value="$home"/>
 							<param name="timeout" value="0s"/>
 						</run_script>
 					</do_elseif>
+					<!-- Patrol sector, fallback to patrol -->
+					<do_else>
+						<set_command command="command.patrol"/>
+						<run_script name="'order.fight.patrol'">
+							<param name="space" value="$home.sector"/>
+							<param name="range" value="class.sector"/>
+							<param name="timeout" value="0s"/>
+						</run_script>
+					</do_else>
 					<resume label="resupply"/>
                 </do_else>
             </do_elseif>
