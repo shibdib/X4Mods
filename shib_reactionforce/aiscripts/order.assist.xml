@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<diff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="aiscripts.xsd">
+<diff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../X4Extracts/aiscripts/aiscripts.xsd">
 <add sel="//do_if[@value='(@$orderdef and $createdefaultorder?) or not $order.requiredskill or (this.combinedskill ge $order.requiredskill)']">
 <!-- <add sel="/aiscript/attention/actions/do_if/do_if [@value='not $order.requiredskill or (this.combinedskill ge $order.requiredskill)']"> -->
 	<do_if value="$order.id == 'ReactionForce'">
