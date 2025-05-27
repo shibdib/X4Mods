@@ -6,9 +6,6 @@
             <param name="home" default="this.sector" type="object" text="{7442342,30102}" comment="{7442342,301003}">
                 <input_param name="class" value="[class.sector, class.station, class.ship]"/>
             </param>
-			<param name="homePos" type="position" default="null" text="{1041, 10027}" comment="Position to defend, if any">
-                <input_param name="class" value="class.sector"/>
-            </param>
             <!-- When idle: -->
             <param name="whenIdle" type="number" default="4" text="{7442342,30126}" comment="Define idle behaviour">
 				<input_param name="startvalue" value="4"/>
@@ -85,7 +82,6 @@
         <requires>
             <match shiptype="shiptype.lasertower" negate="true"/>
         </requires>
-		<!--location object="$homePos.{1}" position="$homePos.{2}" condition="$homePos.{1} and $homePos.{2}" /-->
     </order>
     <interrupts>
         <handler ref="SectorChangeHandler"/>
@@ -100,7 +96,7 @@
                 <check_all>
                     <event_game_loaded/>
                     <check_value value="@$reactionSubordinate == null"/>
-                    <check_value value="global.$reactionForceVersion lt 210"/>
+                    <check_value value="global.$reactionForceVersion lt 211"/>
                 </check_all>
             </conditions>
             <actions>
@@ -109,7 +105,6 @@
 					<cancel_all_orders object="this.ship"/>
 					<create_order object="this.ship" id="'ReactionForce'" default="true">
 						<param name="home" value="$home"/>
-						<param name="homePos" value="$homePos"/>
 						<param name="whenIdle" value="$whenIdle"/>
 						<param name="assignToHome" value="$assignToHome"/>
 						<param name="responseRange" value="$responseRange"/>
@@ -413,7 +408,7 @@
 	</interrupts>
     <!--INIT-->
     <init>
-        <set_value name="global.$reactionForceVersion" exact="210"/>
+        <set_value name="global.$reactionForceVersion" exact="211"/>
 		<set_value name="$last_resupply" exact="0"/>
         <set_value name="$started" exact="player.age"/>
         <set_value name="$responseTime" exact="null"/>
