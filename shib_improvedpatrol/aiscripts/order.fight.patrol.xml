@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+CHANGES
+- Add a toggle to patrol and respond to the whole sector
+-->
+<diff>
+    <add sel="//init">
+        <set_value name="global.$shibimprovedpatrolinstalled" exact="true"/>
+    </add>
+    <add pos="after" sel="//params/param[@name=&quot;space&quot;]">
+        <param name="shibimprovedpatrol" required="false" type="bool" text="{7442343, 101}" default="false"/>
+    </add>
+    <add sel="//run_script[@name=&quot;'move.seekenemies'&quot;]">
+        <param name="shibimprovedpatrol" value="@$shibimprovedpatrol"/>
+    </add>
+</diff>

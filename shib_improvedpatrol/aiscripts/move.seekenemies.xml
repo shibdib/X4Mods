@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<diff>
+    <add sel="//params">
+        <param name="shibimprovedpatrol" default="false"/>
+    </add>
+
+    <add sel="//move_to/interrupt/conditions/check_any">
+        <check_all>
+            <check_value value="$time_movestarted + 10s lt player.age"/>
+            <check_value value="@$shibimprovedpatrol"/>
+            <set_value name="$shibcheck" exact="true"/>
+        </check_all>
+    </add>
+
+    <add sel="//move_to/interrupt/actions" pos="prepend">
+        <do_if value="@$shibimprovedpatrol and @$shibcheck">
+            <set_value name="$sectorships" exact="[]"/>
+            <find_ship name="$sectorships" space="this.ship.sector" class="[class.ship_s, class.ship_m, class.ship_l, class.ship_xl]" recursive="true" multiple="true">
+                <match_content owner="faction.player" negate="true"/>
+            </find_ship>
+            <do_all exact="$sectorships.count" counter="$i">
+                <shuffle_list list="$sectorships"/>
+                <set_value name="$ship" exact="$sectorships.{$i}"/>
+                <do_if value="$ship.iswreck == false and $ship.isoperational and $ship.isinliveview and this.ship.ishostileto.{$ship} and ($ship.travel.active == false or $ship.order.id == 'Flee' or this.ship.distanceto.{$ship} lt this.ship.maxradarrange)">
+                    <create_order id="'Attack'" object="this.ship" immediate="true">
+                        <param name="primarytarget" value="$ship"/>
+                        <param name="radius" value="[this.ship.maxradarrange, 1km].max"/>
+                        <param name="radiusanchorpos" value="$ship.position"/>
+                        <param name="radiusanchorspace" value="this.ship.sector"/>
+                        <param name="enforceradius" value="true"/>
+                        <param name="squad_attack" value="this.ship.subordinates.count gt 0"/>
+                    </create_order>
+                </do_if>
+            </do_all>
+            <set_value name="$shibcheck" exact="false"/>
+            <resume label="moveto" />
+        </do_if>
+        <do_else>
+            <set_value name="$shibimprovedpatrol" value="false"/>
+        </do_else>
+    </add>
+</diff>
