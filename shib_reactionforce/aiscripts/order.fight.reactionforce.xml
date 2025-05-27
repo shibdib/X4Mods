@@ -413,7 +413,7 @@
 	</interrupts>
     <!--INIT-->
     <init>
-        <set_value name="global.$reactionForceVersion" exact="208"/>
+        <set_value name="global.$reactionForceVersion" exact="210"/>
 		<set_value name="$last_resupply" exact="0"/>
         <set_value name="$started" exact="player.age"/>
         <set_value name="$responseTime" exact="null"/>
@@ -644,11 +644,21 @@
 					<!-- Patrol sector, fallback to patrol -->
 					<do_else>
 						<set_command command="command.patrol"/>
-						<run_script name="'order.fight.patrol'">
-							<param name="space" value="$home.sector"/>
-							<param name="range" value="class.sector"/>
-							<param name="timeout" value="0s"/>
-						</run_script>
+						<do_if value="@global.$shibimprovedpatrolinstalled">
+							<run_script name="'order.fight.patrol'">
+								<param name="space" value="$home.sector"/>
+								<param name="range" value="class.sector"/>
+								<param name="timeout" value="0s"/>
+								<param name="shibimprovedpatrol" value="true"/>
+							</run_script>
+						</do_if>
+						<do_else>
+							<run_script name="'order.fight.patrol'">
+								<param name="space" value="$home.sector"/>
+								<param name="range" value="class.sector"/>
+								<param name="timeout" value="0s"/>
+							</run_script>
+						</do_else>
 					</do_else>
 					<resume label="resupply"/>
                 </do_if>
