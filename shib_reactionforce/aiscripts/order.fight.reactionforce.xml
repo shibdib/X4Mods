@@ -482,33 +482,19 @@
                         <!-- New response -->
                         <!--do_if value="@$aggressor and (($aggressor.class.ship_s or $aggressor.class.ship_xs) and $attS) or ($aggressor.class.ship_m and $attM) or ($aggressor.class.ship_l and $attL) or ($aggressor.class.ship_xl and $attXL))"-->
 						<do_if value="@$aggressor">
-                            <create_order object="this.ship" id="'Attack'" immediate="true">
-                                <param name="primarytarget" value="$aggressor"/>
+							<create_order id="'Attack'" object="this.ship" immediate="true">
+								<param name="primarytarget" value="$aggressor"/>
 								<param name="secondarytargets" value="$additionalaggressors"/>
-                                <param name="pursuetargets" value="true"/>
-                                <param name="escort" value="$responseTarget"/>
-                                <param name="allowothertargets" value="false"/>
-                            </create_order>
-							<!-- Send subs to attack or not -->
-							<do_if value="this.assignedcontrolled.subordinates.count and this.$escortgroup?">
-								<do_for_each name="$locsub" in="this.$escortgroup" reverse="true">
-									<do_if value="$locsub.assignment == assignment.attack or ($locsub.assignment == assignment.interception and not ($presentL or $presentXL))">
-										<create_order object="$locsub" id="'Attack'" immediate="true">
-											<param name="primarytarget" value="$aggressor"/>
-											<param name="secondarytargets" value="$additionalaggressors"/>
-											<param name="pursuetargets" value="false"/>
-											<param name="escort" value="$responseTarget"/>
-											<param name="allowothertargets" value="false"/>
-										</create_order>
-									</do_if>
-									<!-- Target is too big for interceptors. But we can defend the commander -->
-									<do_elseif value="$locsub.assignment == assignment.interception and ($presentL or $presentXL)">
-										<create_order object="$locsub" id="'ProtectShip'" immediate="true">
-											<param name="target" value="this.ship"/>
-											<param name="timeout" value="120s"/>
-										</create_order>
-									</do_elseif>
-								</do_for_each>
+								<param name="allowothertargets" value="true"/>
+								<param name="pursuetargets" value="false"/>
+								<param name="internalorder" value="true"/>
+								<param name="escort" value="$responseTarget"/>
+							</create_order>
+							<do_if value="not this.ship.cansee.{$aggressor}">
+								<create_order id="'MoveGeneric'" object="this.ship" immediate="true">
+									<param name="destination" value="$aggressor"/>
+									<param name="pursuetargets" value="false"/>
+								</create_order>
 							</do_if>
                         </do_if>
 						<do_elseif value="$responseTarget.isclass.station">

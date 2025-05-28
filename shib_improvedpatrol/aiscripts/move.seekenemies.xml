@@ -20,16 +20,20 @@
             </find_ship>
             <do_all exact="$sectorships.count" counter="$i">
                 <shuffle_list list="$sectorships"/>
-                <set_value name="$ship" exact="$sectorships.{$i}"/>
-                <do_if value="$ship.iswreck == false and $ship.isoperational and $ship.isinliveview and this.ship.ishostileto.{$ship} and ($ship.travel.active == false or $ship.order.id == 'Flee' or this.ship.distanceto.{$ship} lt this.ship.maxradarrange)">
+                <set_value name="$target" exact="$sectorships.{$i}"/>
+                <do_if value="$target.iswreck == false and $target.isoperational and $target.isinliveview and this.ship.ishostileto.{$target} and ($target.travel.active == false or $target.order.id == 'Flee' or this.ship.distanceto.{$target} lt this.ship.maxradarrange)">
                     <create_order id="'Attack'" object="this.ship" immediate="true">
-                        <param name="primarytarget" value="$ship"/>
-                        <param name="radius" value="[this.ship.maxradarrange, 1km].max"/>
-                        <param name="radiusanchorpos" value="$ship.position"/>
-                        <param name="radiusanchorspace" value="this.ship.sector"/>
-                        <param name="enforceradius" value="true"/>
-                        <param name="squad_attack" value="this.ship.subordinates.count gt 0"/>
+                        <param name="primarytarget" value="$target"/>
+                        <param name="allowothertargets" value="true"/>
+                        <param name="pursuetargets" value="false"/>
+                        <param name="internalorder" value="true"/>
                     </create_order>
+                    <do_if value="not this.ship.cansee.{$target}">
+                        <create_order id="'MoveGeneric'" object="this.ship" immediate="true">
+                            <param name="destination" value="$target"/>
+                            <param name="pursuetargets" value="false"/>
+                        </create_order>
+                    </do_if>
                 </do_if>
             </do_all>
             <set_value name="$shibcheck" exact="false"/>

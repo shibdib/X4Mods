@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="ShibImprovedPatrol" name="Improved Patrol" author="Shibdib" version="100" date="2025-05-26" save="0" description="Makes patrol not suck." enabled="1" sync="false" lastupdate="1587878267">
+<content id="ShibImprovedPatrol" name="Improved Patrol" author="Shibdib" version="101" date="2025-05-26" save="0" description="Makes patrol not suck." enabled="1" sync="false" lastupdate="1587878267">
   <text language="44" name="Improved Patrol" author="Shibdib" description="Makes patrol not suck."/>
 </content>
