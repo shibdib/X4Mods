@@ -21,7 +21,8 @@
             <do_all exact="$sectorships.count" counter="$i">
                 <shuffle_list list="$sectorships"/>
                 <set_value name="$target" exact="$sectorships.{$i}"/>
-                <do_if value="$target.iswreck == false and $target.isoperational and $target.isinliveview and this.ship.ishostileto.{$target} and ($target.travel.active == false or $target.order.id == 'Flee' or this.ship.distanceto.{$target} lt this.ship.maxradarrange)">
+                <do_if value="$target.iswreck == false and $target.isoperational and $target.isinliveview and $target.dock == null
+                and this.ship.ishostileto.{$target} and ($target.travel.active == false or $target.order.id == 'Flee' or this.ship.distanceto.{$target} lt this.ship.maxradarrange)">
                     <create_order id="'Attack'" object="this.ship" immediate="true">
                         <param name="primarytarget" value="$target"/>
                         <param name="allowothertargets" value="true"/>
