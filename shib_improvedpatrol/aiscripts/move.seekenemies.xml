@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <diff>
+    <!--
+    - Add param
+    -->
     <add sel="//params">
         <param name="shibimprovedpatrol" default="false"/>
     </add>
 
+    <!--
+    - Check every 10 seconds
+    -->
     <add sel="//move_to/interrupt/conditions/check_any">
         <check_all>
             <check_value value="$time_movestarted + 10s lt player.age"/>
@@ -12,33 +18,67 @@
         </check_all>
     </add>
 
+    <!--
+    - Look for potential targets
+    -->
     <add sel="//move_to/interrupt/actions" pos="prepend">
         <do_if value="@$shibimprovedpatrol and @$shibcheck">
             <set_value name="$sectorships" exact="[]"/>
             <find_ship name="$sectorships" space="this.ship.sector" class="[class.ship_s, class.ship_m, class.ship_l, class.ship_xl]" recursive="true" multiple="true">
                 <match_content owner="faction.player" negate="true"/>
             </find_ship>
-            <do_all exact="$sectorships.count" counter="$i">
-                <shuffle_list list="$sectorships"/>
-                <set_value name="$target" exact="$sectorships.{$i}"/>
-                <do_if value="$target.iswreck == false and $target.isoperational and $target.isinliveview and $target.dock == null
-                and this.ship.ishostileto.{$target} and ($target.travel.active == false or $target.order.id == 'Flee' or this.ship.distanceto.{$target} lt this.ship.maxradarrange)">
-                    <create_order id="'Attack'" object="this.ship" immediate="true">
-                        <param name="primarytarget" value="$target"/>
-                        <param name="allowothertargets" value="true"/>
-                        <param name="pursuetargets" value="false"/>
-                        <param name="internalorder" value="true"/>
-                    </create_order>
-                    <do_if value="not this.ship.cansee.{$target}">
-                        <create_order id="'MoveGeneric'" object="this.ship" immediate="true">
-                            <param name="destination" value="$target"/>
-                            <param name="pursuetargets" value="false"/>
-                        </create_order>
+            <do_if value="$sectorships.count gt 0">
+                <set_value name="$SHIBpotentialtargets" exact="[]"/>
+                <do_all exact="$sectorships.count" counter="$i">
+                    <set_value name="$ship" exact="$sectorships.{$i}"/>
+                    <do_if value="$ship.iswreck == false and $ship.isoperational and $ship.isinliveview and $ship.dock == null
+                    and this.ship.ishostileto.{$ship} and ($ship.travel.active == false or $ship.order.id == 'Flee' or this.ship.distanceto.{$ship} lt this.ship.maxradarrange)">
+                        <append_to_list name="$SHIBpotentialtargets" exact="$ship"/>
                     </do_if>
+                </do_all>
+                <do_if value="$SHIBpotentialtargets.count gt 0">
+                    <resume label="shibimprovedpatrol" />
                 </do_if>
-            </do_all>
+            </do_if>
             <set_value name="$shibcheck" exact="false"/>
             <resume label="moveto" />
+        </do_if>
+        <do_else>
+            <set_value name="$shibimprovedpatrol" value="false"/>
+        </do_else>
+    </add>
+
+    <!--
+    - Final target determination and attack/move
+    -->
+    <add sel="//attention/actions">
+        <label name="shibimprovedpatrol"/>
+
+        <do_if value="@$shibimprovedpatrol and @$shibcheck and @$SHIBpotentialtargets and $SHIBpotentialtargets.count gt 0">
+            <run_script name="'lib.target.selection'">
+                <param name="primarytarget" value="null" />
+                <param name="secondarytargets" value="$SHIBpotentialtargets" />
+                <param name="escort" value="false" />
+                <param name="pursuedistance" value="null" />
+                <param name="pursuetargets" value="false" />
+                <param name="allowothertargets" value="true" />
+                <param name="checkrelation" value="true"/>
+                <save_retval name="target" variable="$target" />
+            </run_script>
+            <do_if value="$target">
+                <create_order id="'Attack'" object="this.ship" immediate="true">
+                    <param name="primarytarget" value="$target"/>
+                    <param name="allowothertargets" value="true"/>
+                    <param name="pursuetargets" value="false"/>
+                    <param name="internalorder" value="true"/>
+                </create_order>
+                <do_if value="not this.ship.cansee.{$target}">
+                    <create_order id="'MoveGeneric'" object="this.ship" immediate="true">
+                        <param name="destination" value="$target"/>
+                        <param name="pursuetargets" value="false"/>
+                    </create_order>
+                </do_if>
+            </do_if>
         </do_if>
         <do_else>
             <set_value name="$shibimprovedpatrol" value="false"/>
