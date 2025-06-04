@@ -6,6 +6,10 @@
             <param name="home" default="this.sector" type="object" text="{7442342,30102}" comment="{7442342,301003}">
                 <input_param name="class" value="[class.sector, class.station, class.ship]"/>
             </param>
+			<!-- Where the reaction force will defend -->
+			<param name="defendPosition" default="null" type="position" text="{7442342, 30135}" comment="Defense position, used if idle behavior is set to defend a pos">
+				<input_param name="class" value="class.sector"/>
+			</param>
             <!-- When idle: -->
             <param name="whenIdle" type="number" default="4" text="{7442342,30126}" comment="Define idle behaviour">
 				<input_param name="startvalue" value="4"/>
@@ -96,7 +100,7 @@
                 <check_all>
                     <event_game_loaded/>
                     <check_value value="@$reactionSubordinate == null"/>
-                    <check_value value="global.$reactionForceVersion lt 211"/>
+                    <check_value value="global.$reactionForceVersion lt 213"/>
                 </check_all>
             </conditions>
             <actions>
@@ -105,6 +109,7 @@
 					<cancel_all_orders object="this.ship"/>
 					<create_order object="this.ship" id="'ReactionForce'" default="true">
 						<param name="home" value="$home"/>
+						<param name="defendPosition" value="@$defendPosition"/>
 						<param name="whenIdle" value="$whenIdle"/>
 						<param name="assignToHome" value="$assignToHome"/>
 						<param name="responseRange" value="$responseRange"/>
@@ -189,7 +194,7 @@
 				<find_gravidar_contact name="$additionalaggressors" object="event.object" class="class.ship" docked="false" functional="true" maybeattackedby="this.ship" multiple="true">
 					<match_context macro="event.object.sector.macro"/>
 					<match class="class.buildstorage" negate="true"/>
-					<match faction="event.param.faction" negate="false"/>
+					<match owner="event.param.faction" negate="false"/>
 					<match_distance max="12km" object="event.object" />
 				</find_gravidar_contact>
 				<!-- Update vars -->
@@ -408,7 +413,7 @@
 	</interrupts>
     <!--INIT-->
     <init>
-        <set_value name="global.$reactionForceVersion" exact="211"/>
+        <set_value name="global.$reactionForceVersion" exact="213"/>
 		<set_value name="$last_resupply" exact="0"/>
         <set_value name="$started" exact="player.age"/>
         <set_value name="$responseTime" exact="null"/>
@@ -576,8 +581,15 @@
                 <set_value name="$responding" exact="false"/>
                 <set_value name="$activeResponse" exact="false"/>
                 <set_value name="$idling" exact="true"/>
+				<do_if value="$defWhenIdle == true and @$defendPosition">
+					<set_command command="command.patrol"/>
+					<run_script name="'order.fight.protect.position'">
+						<param name="destination" value="$defendPosition"/>
+						<param name="timeout" value="0s"/>
+					</run_script>
+				</do_if>
                 <!-- If home is a station/dockable -->
-                <do_if value="not $home.isclass.space">
+                <do_elseif value="not $home.isclass.space">
                     <!-- Set home to commander if we own the item -->
                     <do_if value="$home.owner == this.ship.owner and $assignToHome">
                         <set_object_commander object="this.ship" commander="$home" assignment="assignment.defence"/>
@@ -642,7 +654,7 @@
 						</do_else>
 					</do_else>
 					<resume label="resupply"/>
-                </do_if>
+                </do_elseif>
                 <!-- If home is a sector -->
                 <do_else>
 					<do_if value="$dockWhenIdle or $holdWhenIdle">
