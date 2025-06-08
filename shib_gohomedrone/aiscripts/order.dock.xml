@@ -5,7 +5,7 @@ CHANGES
 -->
 <diff>
     <add sel="/aiscript/attention/actions" pos="prepend">
-        <do_if value="this.ship and this.ship.type == shiptype.xsdrone'">
+        <do_if value="this.ship and (this.ship.type == shiptype.xsdrone or this.ship.type == shiptype.smalldrone)'">
             <do_if value="this.bboxdistanceto.{$destination} le 250">
                 <debug_text text="'SHIB DRONE DOCK - Initial Dock'"/>
                 <cancel_all_orders object="this.ship"/>
