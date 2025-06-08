@@ -4,13 +4,21 @@ CHANGES
 - Drones will no longer "dock" and will be collected by the ship once they are close.
 -->
 <diff>
-    <add sel="/aiscript/attention/actions" pos="prepend">
-        <do_if value="this.ship and (this.ship.type == shiptype.xsdrone or this.ship.type == shiptype.smalldrone)'">
+    <add sel="//actions/do_if[@value='$thisship.towedobject']" pos="after">
+        <label name="shibDroneDock"/>
+
+        <do_if value="this.ship and (this.ship.type == shiptype.xsdrone or this.ship.type == shiptype.smalldrone)">
             <do_if value="this.bboxdistanceto.{$destination} le 250">
                 <debug_text text="'SHIB DRONE DOCK - Initial Dock'"/>
-                <cancel_all_orders object="this.ship"/>
-                <collect_unit object="$destination" unit="this.ship"/>
-                <resume label="finish"/>
+                <request_docking ship="this.ship" container="$destination" queuedresult="$result1" grantedresult="$result2"/>
+                <do_if value="this.ship.assigneddock">
+                    <dock ship="this.ship"/>
+                    <resume label="finish"/>
+                </do_if>
+                <do_else>
+                    <wait exact="5s"/>
+                    <resume label="shibDroneDock"/>
+                </do_else>
             </do_if>
             <do_else>
                 <!-- Move to destination -->
@@ -18,11 +26,17 @@ CHANGES
                     <param name="destination" value="$destination"/>
                 </create_order>
                 <debug_text text="'SHIB DRONE DOCK - Moving'"/>
-                <wait exact="20s"/>
+                <wait exact="10s"/>
                 <debug_text text="'SHIB DRONE DOCK - Secondary Dock'"/>
                 <cancel_all_orders object="this.ship"/>
-                <collect_unit object="$destination" unit="this.ship"/>
-                <resume label="finish"/>
+                <request_docking ship="this.ship" container="$destination" queuedresult="$result1" grantedresult="$result2"/>
+                <do_if value="this.ship.assigneddock">
+                    <dock ship="this.ship"/>
+                    <resume label="finish"/>
+                </do_if>
+                <do_else>
+                    <resume label="shibDroneDock"/>
+                </do_else>
             </do_else>
         </do_if>
     </add>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+CHANGES
+- Drones will no longer "dock" and will be collected by the ship once they are close.
+-->
+<diff>
+    <add sel="//do_if[@value='$subordinates.{$i}.unitcategory == unitcategory.transport']" pos="prepend">
+        <do_if value="this.bboxdistanceto.{$destination} le 150">
+            <debug_text text="'SHIB DRONE DOCK CARGO - Initial Dock'"/>
+            <include_interrupt_actions ref="TransferItems"/>
+            <dock_masstraffic_drone object="this.ship" destination="$destination" immediate="true" />
+        </do_if>
+        <do_else>
+            <create_order object="this.ship" id="'MoveToObject'" immediate="true">
+                <param name="destination" value="$destination"/>
+            </create_order>
+            <debug_text text="'SHIB DRONE DOCK CARGO - Moving'"/>
+            <wait exact="10s"/>
+            <debug_text text="'SHIB DRONE DOCK CARGO - Delayed Dock'"/>
+            <include_interrupt_actions ref="TransferItems"/>
+            <dock_masstraffic_drone object="this.ship" destination="$destination" immediate="true" />
+        </do_else>
+    </add>
+</diff>
